@@ -302,8 +302,8 @@ var playState = {
                 game.global.searchArrayById(p2Str,game.global.points));
                     var idIndex = connection.indexOf(point.id) - 1;
                     
-                    // TODO: Make this condition less awful; alternatively, find a better way to document connections between
-                    // markers
+                    // TODO: Make this condition less awful
+                    // Alternatively, find a better way to document connections between markers
                     if (IsNumeric(p2Str.charAt(0)) &&
                     !(IsNumeric(p2Str.charAt(p2Str.length - 1))) &&
                        (p2StrIndex > -1) &&
@@ -398,17 +398,17 @@ var playState = {
     enemySpawner: function() {
         if (game.global.enemyShipGroup.children.length <= 10) {
             if (game.global.phase === 1){
-                var selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
-                console.log(selectMarker);
+                var selectMarker = Math.floor(Math.random() * game.global.friGroup.children.length);
                 var selectedShip = game.global.friGroup.children[selectMarker];
-                console.log(selectedShip);
                 var placedShip = false;
                 while (placedShip === false) {
                     game.global.orbiterGroup.children.forEach(function(ship){
-                        if (!(ship.atMarker === selectedShip.id)){
-                            game.global.enemyShipGroup.add(game.global.spawnNewOrbiter(
+                        if (!(ship.atMarker === selectedShip.id) && placedShip === false){
+                            var shipm = game.global.enemyShipGroup.add(game.global.spawnNewOrbiter(
                                 'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04'));
+                            console.log(shipm);
                             placedShip = true;
+                            return true;
                         }
                         if (placedShip === false ){
                             selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
@@ -431,10 +431,11 @@ var playState = {
                 var placedShip = false;
                 while (placedShip === false) {
                     game.global.orbiterGroup.children.forEach(function(ship){
-                        if (!(ship.atMarker === selectedShip.id)){
+                        if (!(ship.atMarker === selectedShip.id) && placedShip === false){
                             game.global.enemyShipGroup.add(game.global.spawnNewOrbiter(
                                 'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04'));
                             placedShip = true;
+                            return true;
                         }
                         if (placedShip === false ){
                             selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
@@ -461,10 +462,11 @@ var playState = {
                 var placedShip = false;
                 while (placedShip === false) {
                     game.global.orbiterGroup.children.forEach(function(ship){
-                        if (!(ship.atMarker === selectedShip.id)){
+                        if (!(ship.atMarker === selectedShip.id) && placedShip === false){
                             game.global.enemyShipGroup.add(game.global.spawnNewOrbiter(
                                 'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04'));
                             placedShip = true;
+                            return true;
                         }
                         if (placedShip === false ){
                             selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
