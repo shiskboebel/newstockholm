@@ -24,6 +24,7 @@ game.global = {
     corGroup: null,
     sunGroup: null,
     enemyShipGroup: null,
+    lineGroup: null,
     nrEnemyShips : 0,
     phase1button: null,
     phase2button: null,

@@ -17,6 +17,7 @@ var playState = {
         game.global.perGroup = game.add.group();
         game.global.sunGroup = game.add.group();
         game.global.enemyShipGroup = game.add.group();
+        game.global.lineGroup = game.add.group();
         
         var Sun = game.add.sprite(game.world.centerX, game.world.centerY, 'sun');
         Sun.scale.x = 0.05;
@@ -86,8 +87,8 @@ var playState = {
         downKey.onDown.add(this.goFull, this);
         
         // Draw lines
-//        lineKey.onDown.add(this.connectMarkers, this);
-        
+        lineKey.onDown.add(this.toggleLineDisplay, this);
+
         // Draw markers and connect them with lines
         this.drawMarkers(game.global.corArray,'0xf6270d','c', game.global.corGroup);
         this.drawMarkers(game.global.perArray,'0xe0f600','p', game.global.perGroup);
@@ -312,6 +313,7 @@ var playState = {
                         graphicLine.moveTo(p2Point.pos.x, p2Point.pos.y);
                         graphicLine.lineTo(point.pos.x, point.pos.y);
                         graphicLine.endFill();
+                        game.global.lineGroup.add(graphicLine);
                     };
                 };
             });
@@ -509,8 +511,14 @@ var playState = {
                 }
             }
         };
-    }
+    },
     
-
+    toggleLineDisplay: function() {
+        if (game.global.lineGroup.visible) {
+            game.global.lineGroup.visible = false;
+        } else {
+            game.global.lineGroup.visible = true;
+        }
+    }
     
 };
