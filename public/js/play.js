@@ -7,7 +7,7 @@ var playState = {
         
         // Variables
         var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-        var logKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
+//        var logKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
         var lineKey = game.input.keyboard.addKey(Phaser.KeyCode.L);
 
         game.global.planets = game.add.group();
@@ -86,11 +86,7 @@ var playState = {
         downKey.onDown.add(this.goFull, this);
         
         // Draw lines
-        lineKey.onDown.add(this.connectMarkers, this);
-        
-        // Log lines
-        logKey.onDown.add(this.connectionLogger, this);
-        
+//        lineKey.onDown.add(this.connectMarkers, this);
         
         // Draw markers and connect them with lines
         this.drawMarkers(game.global.corArray,'0xf6270d','c', game.global.corGroup);
@@ -396,89 +392,123 @@ var playState = {
     },
     
     enemySpawner: function() {
-        if (game.global.enemyShipGroup.children.length <= 10) {
+        if (game.global.nrEnemyShips <= 10) {
             if (game.global.phase === 1){
                 var selectMarker = Math.floor(Math.random() * game.global.friGroup.children.length);
                 var selectedShip = game.global.friGroup.children[selectMarker];
+                var selectedShipGroup = game.global.friGroup.children;
                 var placedShip = false;
-                while (placedShip === false) {
+                var spawnedShip = false;
+
+                while (spawnedShip === false) {
                     game.global.orbiterGroup.children.forEach(function(ship){
-                        if (!(ship.atMarker === selectedShip.id) && placedShip === false){
-                            var shipm = game.global.enemyShipGroup.add(game.global.spawnNewOrbiter(
-                                'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04'));
-                            console.log(shipm);
+
+                        if (ship.moveData.atMarker === selectedShip.id){
                             placedShip = true;
-                            return true;
-                        }
-                        if (placedShip === false ){
-                            selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
-                            selectedShip = game.global.friGroup.children[selectMarker];
+                            return;
                         }
                     });
+
+                    if (placedShip === false){
+                        game.global.spawnNewOrbiter(
+                            'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04');
+                        game.global.nrEnemyShips += 1;
+                        spawnedShip = true;
+                        return;
+                    }
+
+                    selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
+                    selectedShip = selectedShipGroup[selectMarker];
                 }
 
-            }
+            };
+
+
             if (game.global.phase === 2){
-                var regionSelect = Math.floor(Math.random * 2);
+                var regionSelect = Math.floor(Math.random() * 2);
                 var selectMarker = 0;
                 if (regionSelect === 0) {
-                    var selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
+                    var selectMarker = Math.floor(Math.random() * game.global.friGroup.children.length);
+                    var selectedShip = game.global.friGroup.children[selectMarker];
+                    var selectedShipGroup = game.global.friGroup.children;
                 };
                 if (regionSelect === 1) {
-                    var selectMarker = Math.floor(Math.random * game.global.perGroup.children.length);
+                    var selectMarker = Math.floor(Math.random() * game.global.perGroup.children.length);
+                    var selectedShip = game.global.perGroup.children[selectMarker];
+                    var selectedShipGroup = game.global.perGroup.children;
                 };
-                var selectedShip = game.global.friGroup.children[selectMarker];
+
                 var placedShip = false;
-                while (placedShip === false) {
+                var spawnedShip = false;
+
+                while (spawnedShip === false) {
                     game.global.orbiterGroup.children.forEach(function(ship){
-                        if (!(ship.atMarker === selectedShip.id) && placedShip === false){
-                            game.global.enemyShipGroup.add(game.global.spawnNewOrbiter(
-                                'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04'));
+
+                        if (ship.moveData.atMarker === selectedShip.id){
                             placedShip = true;
-                            return true;
-                        }
-                        if (placedShip === false ){
-                            selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
-                            selectedShip = game.global.friGroup.children[selectMarker];
+                            return;
                         }
                     });
+
+                    if (placedShip === false){
+                        game.global.spawnNewOrbiter(
+                            'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04');
+                        game.global.nrEnemyShips += 1;
+                        spawnedShip = true;
+                        return;
+                    }
+
+                    selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
+                    selectedShip = selectedShipGroup[selectMarker];
                 }
 
             }
+
             if (game.global.phase === 3){
-                var regionSelect = Math.floor(Math.random * 3);
+                var regionSelect = Math.floor(Math.random() * 3);
                 var selectMarker = 0;
                 if (regionSelect === 0) {
-                    var selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
+                    var selectMarker = Math.floor(Math.random() * game.global.friGroup.children.length);
+                    var selectedShip = game.global.friGroup.children[selectMarker];
+                    var selectedShip = game.global.friGroup.children[selectMarker];
                 };
                 if (regionSelect === 1) {
-                    var selectMarker = Math.floor(Math.random * game.global.perGroup.children.length);
+                    var selectMarker = Math.floor(Math.random() * game.global.perGroup.children.length);
+                    var selectedShip = game.global.perGroup.children[selectMarker];
+                    var selectedShip = game.global.perGroup.children[selectMarker];
                 };
                 if (regionSelect === 2) {
-                    var selectMarker = Math.floor(Math.random * game.global.corGroup.children.length);
+                    var selectMarker = Math.floor(Math.random() * game.global.corGroup.children.length);
+                    var selectedShip = game.global.corGroup.children[selectMarker];
+                    var selectedShip = game.global.corGroup.children[selectMarker];
                 };
                 
-                var selectedShip = game.global.friGroup.children[selectMarker];
+
                 var placedShip = false;
-                while (placedShip === false) {
+                var spawnedShip = false;
+
+                while (spawnedShip === false) {
                     game.global.orbiterGroup.children.forEach(function(ship){
-                        if (!(ship.atMarker === selectedShip.id) && placedShip === false){
-                            game.global.enemyShipGroup.add(game.global.spawnNewOrbiter(
-                                'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04'));
+
+                        if (ship.moveData.atMarker === selectedShip.id){
                             placedShip = true;
-                            return true;
-                        }
-                        if (placedShip === false ){
-                            selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
-                            selectedShip = game.global.friGroup.children[selectMarker];
+                            return;
                         }
                     });
+
+                    if (placedShip === false){
+                        game.global.spawnNewOrbiter(
+                            'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04');
+                        game.global.nrEnemyShips += 1;
+                        spawnedShip = true;
+                        return;
+                    }
+
+                    selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
+                    selectedShip = selectedShipGroup[selectMarker];
                 }
-
-
             }
         };
-        
     }
     
 

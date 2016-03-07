@@ -24,6 +24,7 @@ game.global = {
     corGroup: null,
     sunGroup: null,
     enemyShipGroup: null,
+    nrEnemyShips : 0,
     phase1button: null,
     phase2button: null,
     phase3button: null,
@@ -59,7 +60,7 @@ game.global = {
         orbiter.moveData.startY = marker.pos.y;
         orbiter.moveData.atMarker = marker.id;
         orbiter.moveData.orbit = 0;
-        orbiter.moveData.orbitRate = 2;
+        orbiter.moveData.orbitRate = 1;
         orbiter.selected = false;
         orbiter.alpha = 0.9;
         orbiter.tint = tint;
