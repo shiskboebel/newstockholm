@@ -52,9 +52,9 @@ var playState = {
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
         
         // Regioncolors
-        var coreColor = '0xf6270d';
-        var peripheryColor = '0xe0f600';
-        var fringeColor = '0x1ad831';
+        var coreColor = '0x80d4ff   ';
+        var peripheryColor = '0x00aaff';
+        var fringeColor = '0x005580';
         
         // Buttons
         var enemybutton = game.add.button(95, 400, 'enemybutton', this.enemySpawner, this, 1,0,2,0);
@@ -90,9 +90,9 @@ var playState = {
         lineKey.onDown.add(this.toggleLineDisplay, this);
 
         // Draw markers and connect them with lines
-        this.drawMarkers(game.global.corArray,'0xf6270d','c', game.global.corGroup);
-        this.drawMarkers(game.global.perArray,'0xe0f600','p', game.global.perGroup);
-        this.drawMarkers(game.global.friArray,'0x1ad831','f', game.global.friGroup);
+        this.drawMarkers(game.global.corArray, coreColor,'c', game.global.corGroup);
+        this.drawMarkers(game.global.perArray, peripheryColor,'p', game.global.perGroup);
+        this.drawMarkers(game.global.friArray, fringeColor,'f', game.global.friGroup);
         this.drawMarkers([[game.world.centerX,game.world.centerY]],'0x800000','s', game.global.sunGroup);
         this.drawLines();
         
