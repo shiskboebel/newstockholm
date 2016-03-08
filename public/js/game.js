@@ -29,6 +29,7 @@ game.global = {
     phase1button: null,
     phase2button: null,
     phase3button: null,
+    topLayer: null,
     
     // Global functions
     searchArrayById : function(nameKey, myArray){

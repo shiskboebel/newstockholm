@@ -18,6 +18,7 @@ var playState = {
         game.global.sunGroup = game.add.group();
         game.global.enemyShipGroup = game.add.group();
         game.global.lineGroup = game.add.group();
+        game.global.topLayer = game.add.group();
         
         var Sun = game.add.sprite(game.world.centerX, game.world.centerY, 'sun');
         Sun.scale.x = 0.05;
@@ -95,7 +96,11 @@ var playState = {
         this.drawMarkers(game.global.friArray, fringeColor,'f', game.global.friGroup);
         this.drawMarkers([[game.world.centerX,game.world.centerY]],'0x800000','s', game.global.sunGroup);
         this.drawLines();
-        
+
+
+        this.drawMinimap(game.global.planets);
+
+
         game.world.bringToTop(game.global.planets);
         game.world.bringToTop(game.global.orbiterGroup);
 
@@ -119,10 +124,13 @@ var playState = {
         game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('2f',game.global.points), '0xbd0030');
         // Beatrix
         game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('1f',game.global.points), '0xd30ef9');
+
+
 	},
 
 	update: function() {
         this.updateOrbiterMovement();
+//        this.drawMinimap();
 	},
     
     render: function() {
@@ -519,6 +527,13 @@ var playState = {
         } else {
             game.global.lineGroup.visible = true;
         }
+    },
+
+    drawMinimap: function(topLayer) {
+        var bmd = game.add.bitmapData(game.world.width, game.world.height);
+        bmd.drawGroup(topLayer);
+        var image = game.add.image(200, 200, bmd);
+        image.scale.setTo(.1);
     }
     
 };
