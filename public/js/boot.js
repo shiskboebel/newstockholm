@@ -31,6 +31,7 @@ var bootState = {
         
         game.load.image('markerFont', 'assets/fonts/retroFonts/FONT3.png');
         game.load.bitmapFont('gem', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
+        game.load.image('Xfont', 'assets/fonts/arcadeFonts/8x8/Xexex.png', true);
         
         game.global.friArray = [[642,296],[701,994],[759,56],[1513,457],[1210,206],[695,824],[1256,890],[587,596],[549,437],[969,151],[1359,274],[1402,556],[1391,842],[1034,1012],[573,724],[740,188],[621,380],[824,925]];
         game.global.perArray = [[1310,678],[1264,525],[960,810],[695,516],[694,675],[829,780],[792,304],[954,248],[1238,315],[1232,622],[1155,759],[1092,883],[843,230],[725,408],[1085,271],[1321,407],[1130,360]];

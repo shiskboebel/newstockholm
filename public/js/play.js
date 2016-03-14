@@ -7,7 +7,7 @@ var playState = {
         
         // Variables
         var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-//        var logKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
+        var cKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
         var lineKey = game.input.keyboard.addKey(Phaser.KeyCode.L);
 
         game.global.planets = game.add.group();
@@ -49,7 +49,7 @@ var playState = {
         
         this.drawPlanet('asteroid', -259, 454, 0.05, 0.05);
         
-        // Stretch to fill and bring planets to top
+        // Stretch to fill
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
         
         // Regioncolors
@@ -98,8 +98,7 @@ var playState = {
         this.drawLines();
 
 
-        this.drawMinimap(game.global.planets);
-
+//        this.drawMinimap(game.global.planets);
 
         game.world.bringToTop(game.global.planets);
         game.world.bringToTop(game.global.orbiterGroup);
@@ -125,6 +124,17 @@ var playState = {
         // Beatrix
         game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('1f',game.global.points), '0xd30ef9');
 
+        game.global.Xfont = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        game.global.Xfont.align = Phaser.RetroFont.ALIGN_CENTER;
+        game.global.Xfont.multiLine = true;
+        game.global.Xfont.autoUpperCase = false;
+        game.global.Xfont.buildRetroFontText();
+        var image = game.add.image(1800, 100, game.global.Xfont);
+
+        // Countdown for ten minutes
+        cKey.onDown.add(this.countdownTimer, this);
+
+
 
 	},
 
@@ -134,6 +144,13 @@ var playState = {
 	},
     
     render: function() {
+
+            if (game.global.countdownTimerTime && game.global.countdownTimerTime.running) {
+                game.debug.text(this.formatTime(Math.round((game.global.timerEvent.delay - game.global.countdownTimerTime.ms) / 1000)), 2, 14, "#ff0");
+            }
+            else {
+                game.debug.text("Done!", 2, 14, "#0f0");
+            }
 
     },
     
@@ -534,6 +551,43 @@ var playState = {
         bmd.drawGroup(topLayer);
         var image = game.add.image(200, 200, bmd);
         image.scale.setTo(.1);
+    },
+
+    updateTimer: function() {
+
+        if (game.global.countDownTime > -1) {
+            if (game.global.countDownTimeSeconds > -1) {
+                game.global.countDownTimeSeconds--;
+            } else {
+                game.global.countDownTimeSeconds = 59;
+                game.global.countDownTime--;
+            }
+            game.global.Xfont.text = game.global.countDownTime.toString() + ':' +
+                game.global.countDownTimeSeconds.toString();
+        } else {
+            game.time.events.stop();
+        };
+    },
+
+    countdownTimer: function() {
+
+        game.global.countdownTimerTime = game.time.create();
+        // Create a delayed event 1m and 30s from now
+        game.global.timerEvent = game.global.countdownTimerTime.add(Phaser.Timer.MINUTE * 0.5, this.endTimer, this);
+
+        // Start the timer
+        game.global.countdownTimerTime.start();
+    },
+
+    endTimer: function() {
+        // Stop the timer when the delayed event triggers
+        game.global.countdownTimerTime.stop();
+    },
+
+    formatTime: function(s) {
+        // Convert seconds (s) to a nicely formatted and padded time string
+        var minutes = "0" + Math.floor(s / 60);
+        var seconds = "0" + (s - minutes * 60);
+        return minutes.substr(-2) + ":" + seconds.substr(-2);
     }
-    
 };

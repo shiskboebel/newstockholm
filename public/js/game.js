@@ -1,6 +1,5 @@
 // Initialize Phaser
 var game = new Phaser.Game(1920, 1080, Phaser.AUTO, 'gameDiv');
-
 // Our 'global' variable
 game.global = {
 	score: 0,
@@ -30,6 +29,9 @@ game.global = {
     phase2button: null,
     phase3button: null,
     topLayer: null,
+    Xfont: null,
+    countdownTimerTime: null,
+    timerEvent: null,
     
     // Global functions
     searchArrayById : function(nameKey, myArray){
