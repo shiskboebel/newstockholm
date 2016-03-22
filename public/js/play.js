@@ -184,7 +184,10 @@ var playState = {
         orbit.endFill();
 
         window.graphics = orbit;
-        
+
+        var fontspot = game.add.bitmapText(game.world.centerX + posX + 10,
+            game.world.centerY + posY + 10, 'gem', planetName, 16);
+        fontspot.tint = '0x99ccff';
     },
     
     drawMoon: function(moonName, planetIndex, posX, posY, scaleX, scaleY) {
@@ -207,6 +210,10 @@ var playState = {
         orbit.endFill();
 
         window.graphics = orbit;
+
+        var fontspot = game.add.bitmapText(planet.x + posX + 10,
+            planet.y + posY + 10, 'gem', moonName, 16);
+        fontspot.tint = '0x99ccff';
         
         
     },
