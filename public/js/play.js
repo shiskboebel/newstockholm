@@ -58,30 +58,30 @@ var playState = {
         var fringeColor = '0x005580';
         
         // Buttons
-        var enemybutton = game.add.button(95, 400, 'enemybutton', this.enemySpawner, this, 1,0,2,0);
-        enemybutton.scale.x = 0.5;
-        enemybutton.scale.y = 0.5;
-        
-        game.global.phase1button = game.add.button(95, 100, 'phase1button', this.phaseChanger, this, 1,0,2,0);
-        game.global.phase1button.phase = 1;
-        game.global.phase1button.selected = false;
-        game.global.phase1button.scale.x = 0.5;
-        game.global.phase1button.scale.y = 0.5;
-        game.global.phase1button.tint = fringeColor;
-        
-        game.global.phase2button = game.add.button(295, 100, 'phase2button', this.phaseChanger, this, 1,0,2,0);
-        game.global.phase2button.phase = 2;
-        game.global.phase2button.selected = false;
-        game.global.phase2button.scale.x = 0.5;
-        game.global.phase2button.scale.y = 0.5;
-        game.global.phase2button.tint = peripheryColor;
-        
-        game.global.phase3button = game.add.button(495, 100, 'phase3button', this.phaseChanger, this, 1,0,2,0);
-        game.global.phase3button.phase = 3;
-        game.global.phase3button.selected = false;
-        game.global.phase3button.scale.x = 0.5;
-        game.global.phase3button.scale.y = 0.5;
-        game.global.phase3button.tint = coreColor;
+//        var enemybutton = game.add.button(95, 400, 'enemybutton', this.enemySpawner, this, 1,0,2,0);
+//        enemybutton.scale.x = 0.5;
+//        enemybutton.scale.y = 0.5;
+//
+//        game.global.phase1button = game.add.button(95, 100, 'phase1button', this.phaseChanger, this, 1,0,2,0);
+//        game.global.phase1button.phase = 1;
+//        game.global.phase1button.selected = false;
+//        game.global.phase1button.scale.x = 0.5;
+//        game.global.phase1button.scale.y = 0.5;
+//        game.global.phase1button.tint = fringeColor;
+//
+//        game.global.phase2button = game.add.button(295, 100, 'phase2button', this.phaseChanger, this, 1,0,2,0);
+//        game.global.phase2button.phase = 2;
+//        game.global.phase2button.selected = false;
+//        game.global.phase2button.scale.x = 0.5;
+//        game.global.phase2button.scale.y = 0.5;
+//        game.global.phase2button.tint = peripheryColor;
+//
+//        game.global.phase3button = game.add.button(495, 100, 'phase3button', this.phaseChanger, this, 1,0,2,0);
+//        game.global.phase3button.phase = 3;
+//        game.global.phase3button.selected = false;
+//        game.global.phase3button.scale.x = 0.5;
+//        game.global.phase3button.scale.y = 0.5;
+//        game.global.phase3button.tint = coreColor;
         
         
         // Fullscreen mode
@@ -124,14 +124,17 @@ var playState = {
         // Beatrix
         game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('1f',game.global.points), '0xd30ef9');
 
+
         game.global.Xfont = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
         game.global.Xfont.align = Phaser.RetroFont.ALIGN_CENTER;
         game.global.Xfont.multiLine = true;
         game.global.Xfont.autoUpperCase = false;
+        game.global.Xfont.resize(40,40,true);
+        console.log(game.global.Xfont);
         game.global.Xfont.buildRetroFontText();
         var image = game.add.image(1800, 100, game.global.Xfont);
 
-        // Countdown for ten minutes
+//         Countdown for ten minutes
         cKey.onDown.add(this.countdownTimer, this);
 
 
@@ -146,10 +149,10 @@ var playState = {
     render: function() {
 
             if (game.global.countdownTimerTime && game.global.countdownTimerTime.running) {
-                game.debug.text(this.formatTime(Math.round((game.global.timerEvent.delay - game.global.countdownTimerTime.ms) / 1000)), 2, 14, "#ff0");
+                game.global.Xfont.text = this.formatTime(Math.round((game.global.timerEvent.delay - game.global.countdownTimerTime.ms) / 1000));
             }
             else {
-                game.debug.text("Done!", 2, 14, "#0f0");
+                game.global.Xfont.text = "Done!";
             }
 
     },
