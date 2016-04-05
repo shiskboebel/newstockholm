@@ -5,10 +5,24 @@ var playState = {
         // Set a background color and the physic system
         var background = game.add.tileSprite(0,0, 1920, 1080, 'background');
         
-        // Variables
+        // Keys
         var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         var cKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
+        var dKey = game.input.keyboard.addKey(Phaser.KeyCode.D);
+        var eKey = game.input.keyboard.addKey(Phaser.KeyCode.E);
+        var pKey = game.input.keyboard.addKey(Phaser.KeyCode.P);
         var lineKey = game.input.keyboard.addKey(Phaser.KeyCode.L);
+        var oneKey = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
+        var twoKey = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
+        var threeKey = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
+        var fourKey = game.input.keyboard.addKey(Phaser.KeyCode.FOUR);
+        var fiveKey = game.input.keyboard.addKey(Phaser.KeyCode.FIVE);
+        var sixKey = game.input.keyboard.addKey(Phaser.KeyCode.SIX);
+        var sevenKey = game.input.keyboard.addKey(Phaser.KeyCode.SEVEN);
+        var eightKey = game.input.keyboard.addKey(Phaser.KeyCode.EIGHT);
+        var nienKey = game.input.keyboard.addKey(Phaser.KeyCode.NINE);
+
+
 
         game.global.planets = game.add.group();
         game.global.orbiterGroup = game.add.group();
@@ -56,34 +70,7 @@ var playState = {
         var coreColor = '0x80d4ff   ';
         var peripheryColor = '0x00aaff';
         var fringeColor = '0x005580';
-        
-        // Buttons
-//        var enemybutton = game.add.button(95, 400, 'enemybutton', this.enemySpawner, this, 1,0,2,0);
-//        enemybutton.scale.x = 0.5;
-//        enemybutton.scale.y = 0.5;
-//
-//        game.global.phase1button = game.add.button(95, 100, 'phase1button', this.phaseChanger, this, 1,0,2,0);
-//        game.global.phase1button.phase = 1;
-//        game.global.phase1button.selected = false;
-//        game.global.phase1button.scale.x = 0.5;
-//        game.global.phase1button.scale.y = 0.5;
-//        game.global.phase1button.tint = fringeColor;
-//
-//        game.global.phase2button = game.add.button(295, 100, 'phase2button', this.phaseChanger, this, 1,0,2,0);
-//        game.global.phase2button.phase = 2;
-//        game.global.phase2button.selected = false;
-//        game.global.phase2button.scale.x = 0.5;
-//        game.global.phase2button.scale.y = 0.5;
-//        game.global.phase2button.tint = peripheryColor;
-//
-//        game.global.phase3button = game.add.button(495, 100, 'phase3button', this.phaseChanger, this, 1,0,2,0);
-//        game.global.phase3button.phase = 3;
-//        game.global.phase3button.selected = false;
-//        game.global.phase3button.scale.x = 0.5;
-//        game.global.phase3button.scale.y = 0.5;
-//        game.global.phase3button.tint = coreColor;
-        
-        
+
         // Fullscreen mode
         downKey.onDown.add(this.goFull, this);
         
@@ -97,48 +84,85 @@ var playState = {
         this.drawMarkers([[game.world.centerX,game.world.centerY]],'0x800000','s', game.global.sunGroup);
         this.drawLines();
 
-
-//        this.drawMinimap(game.global.planets);
-
         game.world.bringToTop(game.global.planets);
         game.world.bringToTop(game.global.orbiterGroup);
 
 
         
         // Earth
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('0c',game.global.points), '0x0F497B');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('0c',game.global.points),
+        '0x0F497B',
+        oneKey);
         // Mercury
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('1c',game.global.points), '0xdfe129');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('1c',game.global.points),
+        '0xdfe129',
+        twoKey);
         // Mars
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('2c',game.global.points), '0xf6cb14');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('2c',game.global.points),
+        '0xf6cb14',
+        threeKey);
         // Europa
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('1p',game.global.points), '0x3bbab7');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('1p',game.global.points),
+        '0x3bbab7',
+        fourKey);
         // Titan
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('2p',game.global.points), '0x39e75f');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('2p',game.global.points),
+        '0x39e75f',
+        fiveKey);
         // Miranda
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('0p',game.global.points), '0xaeb3cc');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('0p',game.global.points),
+        '0xaeb3cc',
+        sixKey);
         // Triton
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('3f',game.global.points), '0x48d5ff');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('3f',game.global.points),
+        '0x48d5ff',
+        sevenKey);
         // Pluto and Charon
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('2f',game.global.points), '0xbd0030');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('2f',game.global.points),
+        '0xbd0030',
+        eightKey);
         // Beatrix
-        game.global.spawnNewOrbiter('friendlyship', game.global.searchArrayById('1f',game.global.points), '0xd30ef9');
+        game.global.spawnNewOrbiter(
+        'friendlyship',
+        game.global.searchArrayById('1f',game.global.points),
+        '0xd30ef9',
+        nienKey);
 
 
         game.global.Xfont = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
         game.global.Xfont.align = Phaser.RetroFont.ALIGN_CENTER;
         game.global.Xfont.multiLine = true;
         game.global.Xfont.autoUpperCase = false;
-        game.global.Xfont.resize(40,40,true);
-        console.log(game.global.Xfont);
         game.global.Xfont.buildRetroFontText();
-        var image = game.add.image(1800, 100, game.global.Xfont);
-
-//         Countdown for ten minutes
+        var image = game.add.image(1500, 100, game.global.Xfont);
+        image.scale.x = 10;
+        image.scale.y = 10;
+        image.visible = false;
+    //         Countdown for ten minutes
         cKey.onDown.add(this.countdownTimer, this);
+        // http://www.html5gamedevs.com/topic/3541-listener-functions-how-do-i-properly-use-them/
+        dKey.onDown.add(function() {this.toggleDisplay(image)}, this);
+        pKey.onDown.add(this.phaseChanger, this);
+        eKey.onDown.add(this.enemySpawner, this);
 
-
-
+        game.global.gamePhaseIndicator = game.add.bitmapText(20, 20, 'gem', game.global.phase.toString(), 100);
+        game.global.gamePhaseIndicator.tint = '0xccffff';
 	},
 
 	update: function() {
@@ -148,11 +172,13 @@ var playState = {
     
     render: function() {
 
+            game.global.gamePhaseIndicator.text = game.global.phase.toString();
+
             if (game.global.countdownTimerTime && game.global.countdownTimerTime.running) {
                 game.global.Xfont.text = this.formatTime(Math.round((game.global.timerEvent.delay - game.global.countdownTimerTime.ms) / 1000));
             }
             else {
-                game.global.Xfont.text = "Done!";
+                game.global.Xfont.text = "00:00";
             }
 
     },
@@ -258,6 +284,13 @@ var playState = {
                 }, img);
                 
                 img.events.onInputOut.add(function() {
+                    var smIndex = game.global.selectedMarkers.indexOf(game.global.searchArrayById(this.id,game.global.selectedMarkers));
+                    if (smIndex > -1) {
+                        game.global.selectedMarkers.splice(smIndex,1);
+                        this.alpha = 0.5;
+                        this.selected = false;
+                        return true;
+                    }
                     if (this.selected === false) {
                         this.alpha = 0.5;
                     }
@@ -398,33 +431,16 @@ var playState = {
         };
     },
     
-    phaseChanger: function(button) {
-        
-        if (button.selected === false) {
-            button._onOutFrame = 2;
-            button._onUpFrame = 2;
-            game.global.phase = button.phase;
-            if (button.phase === 1) {
-                unselectButton(game.global.phase2button);
-                unselectButton(game.global.phase3button);
-            };
-            
-            if (button.phase === 2) {
-                unselectButton(game.global.phase1button);
-                unselectButton(game.global.phase3button);
-            };
-            
-            if (button.phase === 3) {
-                unselectButton(game.global.phase2button);
-                unselectButton(game.global.phase1button);
-            };
-            
-            function unselectButton(unButton) {
-                unButton.selected = false;
-                unButton._onOutFrame = 0;
-                unButton._onUpFrame = 0;
-                unButton.forceOut;
-            }
+    phaseChanger: function() {
+
+        if (game.global.phase === 1) {
+            game.global.phase = 2;
+        } else if (game.global.phase === 2) {
+            game.global.phase = 3;
+        } else if (game.global.phase === 3) {
+            game.global.phase = 1;
+        } else {
+            game.global.phase = 1;
         }
     },
     
@@ -556,6 +572,14 @@ var playState = {
         }
     },
 
+    toggleDisplay: function(thing) {
+        if (thing.visible) {
+            thing.visible = false;
+        } else {
+            thing.visible = true;
+        }
+    },
+
     drawMinimap: function(topLayer) {
         var bmd = game.add.bitmapData(game.world.width, game.world.height);
         bmd.drawGroup(topLayer);
@@ -582,8 +606,7 @@ var playState = {
     countdownTimer: function() {
 
         game.global.countdownTimerTime = game.time.create();
-        // Create a delayed event 1m and 30s from now
-        game.global.timerEvent = game.global.countdownTimerTime.add(Phaser.Timer.MINUTE * 0.5, this.endTimer, this);
+        game.global.timerEvent = game.global.countdownTimerTime.add(Phaser.Timer.MINUTE * 10, this.endTimer, this);
 
         // Start the timer
         game.global.countdownTimerTime.start();

@@ -5,6 +5,7 @@ game.global = {
 	score: 0,
 	// Add other global variables
     phase: 0,
+    gamePhaseIndicator: "",
     planets: null,
     orbiterGroup: null,
     points: [],
@@ -48,7 +49,7 @@ game.global = {
             }
         }
     },
-    spawnNewOrbiter: function (graphic, marker, tint) {
+    spawnNewOrbiter: function (graphic, marker, tint, selectKey) {
 	
         var orbiter = game.add.sprite(marker.pos.x, marker.pos.y, graphic);
         orbiter.anchor.setTo(0.5, 0.5);
@@ -66,16 +67,36 @@ game.global = {
         orbiter.moveData.orbit = 0;
         orbiter.moveData.orbitRate = 1;
         orbiter.selected = false;
-        orbiter.alpha = 0.9;
+        orbiter.alpha = 0.5;
         orbiter.tint = tint;
         
         orbiter.events.onInputDown.add(function() {
             if (this.selected === true) {
-                this.alpha = 0.9;
+                this.alpha = 0.5;
                 this.selected = false;
                 return true;
             }
             if (this.selected === false){ 
+                game.global.orbiterGroup.forEach(function(orbiter) {
+                    orbiter.selected = false;
+                });
+                this.alpha = 1;
+                this.selected = true;
+                return true;
+            }
+        }, orbiter);
+
+        selectKey.onDown.add(function() {
+            if (this.selected === true) {
+                this.alpha = 0.5;
+                this.selected = false;
+                return true;
+            }
+            if (this.selected === false){
+                game.global.orbiterGroup.forEach(function(orbiter) {
+                    orbiter.selected = false;
+                    orbiter.alpha = 0.5;
+                });
                 this.alpha = 1;
                 this.selected = true;
                 return true;
@@ -88,7 +109,7 @@ game.global = {
 
         orbiter.events.onInputOut.add(function() {
             if (this.selected === false) {
-                this.alpha = 0.9;
+                this.alpha = 0.5;
             }
         }, orbiter);
         
