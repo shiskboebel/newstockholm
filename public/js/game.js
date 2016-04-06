@@ -31,6 +31,7 @@ game.global = {
     phase3button: null,
     topLayer: null,
     Xfont: null,
+    phaseFont: null,
     countdownTimerTime: null,
     timerEvent: null,
     
@@ -86,23 +87,25 @@ game.global = {
             }
         }, orbiter);
 
-        selectKey.onDown.add(function() {
-            if (this.selected === true) {
-                this.alpha = 0.5;
-                this.selected = false;
-                return true;
-            }
-            if (this.selected === false){
-                game.global.orbiterGroup.forEach(function(orbiter) {
-                    orbiter.selected = false;
-                    orbiter.alpha = 0.5;
-                });
-                this.alpha = 1;
-                this.selected = true;
-                return true;
-            }
-        }, orbiter);
-        
+        if (selectKey) {
+            selectKey.onDown.add(function() {
+                if (this.selected === true) {
+                    this.alpha = 0.5;
+                    this.selected = false;
+                    return true;
+                }
+                if (this.selected === false){
+                    game.global.orbiterGroup.forEach(function(orbiter) {
+                        orbiter.selected = false;
+                        orbiter.alpha = 0.5;
+                    });
+                    this.alpha = 1;
+                    this.selected = true;
+                    return true;
+                }
+            }, orbiter);
+        }
+
         orbiter.events.onInputOver.add(function() {
             this.alpha = 1;
         }, orbiter);

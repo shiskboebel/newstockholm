@@ -1,5 +1,7 @@
 var playState = {
 
+    eShipCounter: 0,
+
 	create: function() { 
         
         // Set a background color and the physic system
@@ -158,11 +160,34 @@ var playState = {
         cKey.onDown.add(this.countdownTimer, this);
         // http://www.html5gamedevs.com/topic/3541-listener-functions-how-do-i-properly-use-them/
         dKey.onDown.add(function() {this.toggleDisplay(image)}, this);
+
+        game.global.phaseFont = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        game.global.phaseFont.align = Phaser.RetroFont.ALIGN_CENTER;
+        game.global.phaseFont.multiLine = true;
+        game.global.phaseFont.autoUpperCase = false;
+        game.global.phaseFont.text = game.global.phase.toString();
+        game.global.phaseFont.buildRetroFontText();
+        var phaseIndicator = game.add.image(20, 100, game.global.phaseFont);
+        phaseIndicator.scale.x = 10;
+        phaseIndicator.scale.y = 10;
+        phaseIndicator.visible = true;
+
         pKey.onDown.add(this.phaseChanger, this);
         eKey.onDown.add(this.enemySpawner, this);
 
-        game.global.gamePhaseIndicator = game.add.bitmapText(20, 20, 'gem', game.global.phase.toString(), 100);
-        game.global.gamePhaseIndicator.tint = '0xccffff';
+        this.eShipCounter = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        this.eShipCounter.align = Phaser.RetroFont.ALIGN_CENTER;
+        this.eShipCounter.multiLine = true;
+        this.eShipCounter.autoUpperCase = false;
+        this.eShipCounter.text = game.global.nrEnemyShips.toString();
+        this.eShipCounter.buildRetroFontText();
+
+        var shipCount = game.add.image(20, 200, this.eShipCounter);
+        shipCount.scale.x = 10;
+        shipCount.scale.y = 10;
+        shipCount.visible = true;
+
+
 	},
 
 	update: function() {
@@ -172,7 +197,8 @@ var playState = {
     
     render: function() {
 
-            game.global.gamePhaseIndicator.text = game.global.phase.toString();
+            game.global.phaseFont.text = game.global.phase.toString();
+            this.eShipCounter.text = game.global.nrEnemyShips.toString();
 
             if (game.global.countdownTimerTime && game.global.countdownTimerTime.running) {
                 game.global.Xfont.text = this.formatTime(Math.round((game.global.timerEvent.delay - game.global.countdownTimerTime.ms) / 1000));
@@ -445,7 +471,7 @@ var playState = {
     },
     
     enemySpawner: function() {
-        if (game.global.nrEnemyShips <= 10) {
+        if (game.global.nrEnemyShips < 10) {
             if (game.global.phase === 1){
                 var selectMarker = Math.floor(Math.random() * game.global.friGroup.children.length);
                 var selectedShip = game.global.friGroup.children[selectMarker];
@@ -464,7 +490,10 @@ var playState = {
 
                     if (placedShip === false){
                         game.global.spawnNewOrbiter(
-                            'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04');
+                            'enemyship',
+                            game.global.searchArrayById(selectedShip.id,game.global.points),
+                            '0xB51C04',
+                            null);
                         game.global.nrEnemyShips += 1;
                         spawnedShip = true;
                         return;
@@ -505,7 +534,10 @@ var playState = {
 
                     if (placedShip === false){
                         game.global.spawnNewOrbiter(
-                            'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04');
+                            'enemyship',
+                            game.global.searchArrayById(selectedShip.id,game.global.points),
+                            '0xB51C04',
+                            null);
                         game.global.nrEnemyShips += 1;
                         spawnedShip = true;
                         return;
@@ -551,7 +583,10 @@ var playState = {
 
                     if (placedShip === false){
                         game.global.spawnNewOrbiter(
-                            'enemyship', game.global.searchArrayById(selectedShip.id,game.global.points), '0xB51C04');
+                            'enemyship',
+                            game.global.searchArrayById(selectedShip.id,game.global.points),
+                            '0xB51C04',
+                            null);
                         game.global.nrEnemyShips += 1;
                         spawnedShip = true;
                         return;
