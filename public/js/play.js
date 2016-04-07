@@ -1,6 +1,7 @@
 var playState = {
 
     eShipCounter: 0,
+    selectedShip: '',
 
 	create: function() { 
         
@@ -13,6 +14,9 @@ var playState = {
         var dKey = game.input.keyboard.addKey(Phaser.KeyCode.D);
         var eKey = game.input.keyboard.addKey(Phaser.KeyCode.E);
         var pKey = game.input.keyboard.addKey(Phaser.KeyCode.P);
+        var hKey = game.input.keyboard.addKey(Phaser.KeyCode.H);
+        game.global.kKey = game.input.keyboard.addKey(Phaser.KeyCode.K);
+
         var lineKey = game.input.keyboard.addKey(Phaser.KeyCode.L);
         var oneKey = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
         var twoKey = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
@@ -96,57 +100,66 @@ var playState = {
         'friendlyship',
         game.global.searchArrayById('0c',game.global.points),
         '0x0F497B',
-        oneKey);
+        oneKey,
+        'Earth');
         // Mercury
         game.global.spawnNewOrbiter(
         'friendlyship',
         game.global.searchArrayById('1c',game.global.points),
         '0xdfe129',
-        twoKey);
+        twoKey,
+        'Mercury');
         // Mars
         game.global.spawnNewOrbiter(
         'friendlyship',
         game.global.searchArrayById('2c',game.global.points),
         '0xf6cb14',
-        threeKey);
+        threeKey,
+        'Mars');
         // Europa
         game.global.spawnNewOrbiter(
         'friendlyship',
         game.global.searchArrayById('1p',game.global.points),
         '0x3bbab7',
-        fourKey);
+        fourKey,
+        'Europa');
         // Titan
         game.global.spawnNewOrbiter(
         'friendlyship',
         game.global.searchArrayById('2p',game.global.points),
         '0x39e75f',
-        fiveKey);
+        fiveKey,
+        'Titan');
         // Miranda
         game.global.spawnNewOrbiter(
         'friendlyship',
         game.global.searchArrayById('0p',game.global.points),
         '0xaeb3cc',
-        sixKey);
+        sixKey,
+        'Miranda');
         // Triton
         game.global.spawnNewOrbiter(
         'friendlyship',
         game.global.searchArrayById('3f',game.global.points),
         '0x48d5ff',
-        sevenKey);
+        sevenKey,
+        'Triton');
         // Pluto and Charon
         game.global.spawnNewOrbiter(
         'friendlyship',
         game.global.searchArrayById('2f',game.global.points),
         '0xbd0030',
-        eightKey);
+        eightKey,
+        'Pluto');
         // Beatrix
         game.global.spawnNewOrbiter(
         'friendlyship',
         game.global.searchArrayById('1f',game.global.points),
         '0xd30ef9',
-        nienKey);
+        nienKey,
+        'Beatrix');
 
-
+        // TODO: Refactor all on-board status text to functions
         game.global.Xfont = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
         game.global.Xfont.align = Phaser.RetroFont.ALIGN_CENTER;
         game.global.Xfont.multiLine = true;
@@ -156,7 +169,7 @@ var playState = {
         image.scale.x = 10;
         image.scale.y = 10;
         image.visible = false;
-    //         Countdown for ten minutes
+        // Countdown for ten minutes
         cKey.onDown.add(this.countdownTimer, this);
         // http://www.html5gamedevs.com/topic/3541-listener-functions-how-do-i-properly-use-them/
         dKey.onDown.add(function() {this.toggleDisplay(image)}, this);
@@ -165,11 +178,11 @@ var playState = {
         game.global.phaseFont.align = Phaser.RetroFont.ALIGN_CENTER;
         game.global.phaseFont.multiLine = true;
         game.global.phaseFont.autoUpperCase = false;
-        game.global.phaseFont.text = game.global.phase.toString();
+        game.global.phaseFont.text = 'Phase: ' + game.global.phase.toString();
         game.global.phaseFont.buildRetroFontText();
         var phaseIndicator = game.add.image(20, 100, game.global.phaseFont);
-        phaseIndicator.scale.x = 10;
-        phaseIndicator.scale.y = 10;
+        phaseIndicator.scale.x = 5;
+        phaseIndicator.scale.y = 5;
         phaseIndicator.visible = true;
 
         pKey.onDown.add(this.phaseChanger, this);
@@ -179,13 +192,26 @@ var playState = {
         this.eShipCounter.align = Phaser.RetroFont.ALIGN_CENTER;
         this.eShipCounter.multiLine = true;
         this.eShipCounter.autoUpperCase = false;
-        this.eShipCounter.text = game.global.nrEnemyShips.toString();
+        this.eShipCounter.text = 'Hound Ships: ' + game.global.nrEnemyShips.toString();
         this.eShipCounter.buildRetroFontText();
 
         var shipCount = game.add.image(20, 200, this.eShipCounter);
-        shipCount.scale.x = 10;
-        shipCount.scale.y = 10;
-        shipCount.visible = true;
+        shipCount.scale.x = 5;
+        shipCount.scale.y = 5;
+        shipCount.visible = false;
+        hKey.onDown.add(function() {this.toggleDisplay(shipCount)}, this);
+
+        this.selectedShip = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        this.selectedShip.align = Phaser.RetroFont.ALIGN_CENTER;
+        this.selectedShip.multiLine = true;
+        this.selectedShip.autoUpperCase = false;
+        this.selectedShip.text = 'Selected: ' + game.global.selectedShipName;
+        this.selectedShip.buildRetroFontText();
+
+        var shipSelect = game.add.image(20, 150, this.selectedShip);
+        shipSelect.scale.x = 5;
+        shipSelect.scale.y = 5;
+        shipSelect.visible = true;
 
 
 	},
@@ -197,9 +223,12 @@ var playState = {
     
     render: function() {
 
-            game.global.phaseFont.text = game.global.phase.toString();
-            this.eShipCounter.text = game.global.nrEnemyShips.toString();
+            // Render status text
+            game.global.phaseFont.text = 'Phase: ' + game.global.phase.toString();
+            this.eShipCounter.text = 'Hound Ships: ' + game.global.nrEnemyShips.toString();
+            this.selectedShip.text = 'Selected: ' + game.global.selectedShipName;
 
+            // Render countdown timer
             if (game.global.countdownTimerTime && game.global.countdownTimerTime.running) {
                 game.global.Xfont.text = this.formatTime(Math.round((game.global.timerEvent.delay - game.global.countdownTimerTime.ms) / 1000));
             }
@@ -459,14 +488,16 @@ var playState = {
     
     phaseChanger: function() {
 
-        if (game.global.phase === 1) {
+        if (game.global.phase === 0) {
+            game.global.phase = 1;
+        } else if (game.global.phase === 1) {
             game.global.phase = 2;
         } else if (game.global.phase === 2) {
             game.global.phase = 3;
         } else if (game.global.phase === 3) {
-            game.global.phase = 1;
+            game.global.phase = 0;
         } else {
-            game.global.phase = 1;
+            game.global.phase = 0;
         }
     },
     
@@ -489,12 +520,14 @@ var playState = {
                     });
 
                     if (placedShip === false){
-                        game.global.spawnNewOrbiter(
+                        var ship = game.global.spawnNewOrbiter(
                             'enemyship',
                             game.global.searchArrayById(selectedShip.id,game.global.points),
                             '0xB51C04',
-                            null);
+                            null,
+                            'Hound' + game.global.totalNrEnemyShips.toString());
                         game.global.nrEnemyShips += 1;
+                        game.global.totalNrEnemyShips += 1;
                         spawnedShip = true;
                         return;
                     }

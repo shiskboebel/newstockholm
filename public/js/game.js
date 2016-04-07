@@ -13,6 +13,7 @@ game.global = {
     currentPoint: null,
     marker: null,
     selectedMarkers: [],
+    selectedShipName: '',
     connectedMarkers: [],
     linesArray: [],
     inputType: null,
@@ -26,6 +27,7 @@ game.global = {
     enemyShipGroup: null,
     lineGroup: null,
     nrEnemyShips : 0,
+    totalNrEnemyShips: 0,
     phase1button: null,
     phase2button: null,
     phase3button: null,
@@ -34,6 +36,7 @@ game.global = {
     phaseFont: null,
     countdownTimerTime: null,
     timerEvent: null,
+    kKey: '',
     
     // Global functions
     searchArrayById : function(nameKey, myArray){
@@ -50,7 +53,7 @@ game.global = {
             }
         }
     },
-    spawnNewOrbiter: function (graphic, marker, tint, selectKey) {
+    spawnNewOrbiter: function (graphic, marker, tint, selectKey, shipName) {
 	
         var orbiter = game.add.sprite(marker.pos.x, marker.pos.y, graphic);
         orbiter.anchor.setTo(0.5, 0.5);
@@ -70,19 +73,23 @@ game.global = {
         orbiter.selected = false;
         orbiter.alpha = 0.5;
         orbiter.tint = tint;
+        orbiter.shipName = shipName;
         
         orbiter.events.onInputDown.add(function() {
             if (this.selected === true) {
                 this.alpha = 0.5;
                 this.selected = false;
+                game.global.selectedShipName = '';
                 return true;
             }
             if (this.selected === false){ 
                 game.global.orbiterGroup.forEach(function(orbiter) {
                     orbiter.selected = false;
+                    orbiter.alpha = 0.5;
                 });
                 this.alpha = 1;
                 this.selected = true;
+                game.global.selectedShipName = this.shipName;
                 return true;
             }
         }, orbiter);
@@ -92,6 +99,7 @@ game.global = {
                 if (this.selected === true) {
                     this.alpha = 0.5;
                     this.selected = false;
+                    game.global.selectedShipName = '';
                     return true;
                 }
                 if (this.selected === false){
@@ -101,6 +109,7 @@ game.global = {
                     });
                     this.alpha = 1;
                     this.selected = true;
+                    game.global.selectedShipName = this.shipName;
                     return true;
                 }
             }, orbiter);
@@ -115,7 +124,17 @@ game.global = {
                 this.alpha = 0.5;
             }
         }, orbiter);
-        
+
+        game.global.kKey.onDown.add(function() {
+            if ((this.selected === true) && (shipName.toLowerCase().indexOf("hound") >= 0)) {
+                this.destroy();
+                this.selected = false;
+                game.global.nrEnemyShips -= 1;
+                game.global.selectedShipName = '';
+                return true;
+            }
+        }, orbiter);
+
         game.global.orbiterGroup.add(orbiter);
         return orbiter;
 
