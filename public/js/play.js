@@ -74,9 +74,9 @@ var playState = {
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
         
         // Regioncolors
-        var coreColor = '0x80d4ff   ';
-        var peripheryColor = '0x00aaff';
-        var fringeColor = '0x005580';
+        var coreColor = '0x67bbe4';
+        var peripheryColor = '0x79b5d2';
+        var fringeColor = '0x94acb8';
 
         // Fullscreen mode
         downKey.onDown.add(this.goFull, this);
@@ -271,8 +271,40 @@ var playState = {
 
         window.graphics = orbit;
 
-        var fontspot = game.add.bitmapText(game.world.centerX + posX + 10,
-            game.world.centerY + posY + 10, 'gem', planetName, 16);
+        var planetX = 40;
+        var planetY = 40;
+        var planetNameTemp = planetName;
+
+        if (planetName === 'plutocharon') {
+            planetNameTemp = 'pluto';
+        };
+
+        if (planetName === 'asteroid') {
+            planetNameTemp = 'beatrix';
+        };
+
+        if (planetName === 'uranus') {
+            planetX = 60;
+            planetY = 60;
+        };
+
+        if (planetName === 'jupiter') {
+            planetX = -20;
+            planetY = 80;
+        };
+
+        if (planetName === 'neptune') {
+            planetX = -50;
+            planetY = 40;
+        };
+
+        if (planetName === 'saturn') {
+            planetX = 40;
+            planetY = -45;
+        };
+
+        var fontspot = game.add.bitmapText(game.world.centerX + posX - planetX,
+            game.world.centerY + posY - planetY, 'gem', planetNameTemp, 16);
         fontspot.tint = '0x99ccff';
     },
     
@@ -297,8 +329,16 @@ var playState = {
 
         window.graphics = orbit;
 
-        var fontspot = game.add.bitmapText(planet.x + posX + 10,
-            planet.y + posY + 10, 'gem', moonName, 16);
+        var planetX = 12;
+        var planetY = 12;
+
+        if (moonName === 'titan') {
+            planetX = 10    ;
+            planetY = -30;
+        };
+
+        var fontspot = game.add.bitmapText(planet.x + posX + planetX,
+            planet.y + posY + planetY, 'gem', moonName, 16);
         fontspot.tint = '0x99ccff';
         
         
@@ -505,8 +545,8 @@ var playState = {
 
     resourceSpawner: function() {
         var resourceAmount = Math.floor(Math.random() * 3) + 1;
-        var resourceTypes = ['antihydrogen', 'heliumthree'];
-        var resourceTypeSelect = Math.floor(Math.random() * 2);
+        var resourceTypes = ['antihydrogen', 'heliumthree', 'heliumthree'];
+        var resourceTypeSelect = Math.floor(Math.random() * 3);
         var resourceString = resourceTypes[resourceTypeSelect] + resourceAmount.toString();
         console.log(resourceAmount, resourceTypeSelect, resourceString);
 
@@ -517,7 +557,6 @@ var playState = {
             var selectedShipGroup = game.global.friGroup.children;
             var placedShip = false;
             var spawnedShip = false;
-
 
             while (spawnedShip === false) {
                 game.global.orbiterGroup.children.forEach(function(ship){

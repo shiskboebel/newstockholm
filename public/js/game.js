@@ -76,6 +76,8 @@ game.global = {
             orbiter.scale.setTo(0.3,0.3);
             orbiter.moveData.orbitRate = 0;
             orbiter.alpha = 0.8;
+            orbiter.moveData.startX = marker.pos.x - 15;
+            orbiter.moveData.startY = marker.pos.y - 15;
         } else {
             orbiter.scale.setTo(0.1,0.1);
             orbiter.moveData.orbitRate = 1;
@@ -147,7 +149,7 @@ game.global = {
             if ((this.selected === true) && killable) {
                 this.selected = false;
 
-                if (shipName.toLowerCase().indexOf("hound") >= 0) {
+                if (graphic.toLowerCase().indexOf("enemyship") >= 0) {
                     game.global.nrEnemyShips -= 1;
                     // Kill animation:
                     // https://github.com/robomatix/Phaser-example-animation-change-before-killing-it/blob/master/index.html
@@ -163,6 +165,14 @@ game.global = {
                 return true;
             }
         }, orbiter);
+
+        // Kill unused faction ships
+
+        if ((shipName === ('Mercury')) ||
+            (shipName === ('Triton')) ||
+            (shipName === ('Miranda'))) {
+                orbiter.kill();
+        };
 
         game.global.orbiterGroup.add(orbiter);
         return orbiter;
