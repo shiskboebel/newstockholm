@@ -15,6 +15,7 @@ var playState = {
         var eKey = game.input.keyboard.addKey(Phaser.KeyCode.E);
         var pKey = game.input.keyboard.addKey(Phaser.KeyCode.P);
         var hKey = game.input.keyboard.addKey(Phaser.KeyCode.H);
+        var rKey = game.input.keyboard.addKey(Phaser.KeyCode.R);
         game.global.kKey = game.input.keyboard.addKey(Phaser.KeyCode.K);
 
         var lineKey = game.input.keyboard.addKey(Phaser.KeyCode.L);
@@ -187,6 +188,7 @@ var playState = {
 
         pKey.onDown.add(this.phaseChanger, this);
         eKey.onDown.add(this.enemySpawner, this);
+        rKey.onDown.add(this.resourceSpawner, this);
 
         this.eShipCounter = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
         this.eShipCounter.align = Phaser.RetroFont.ALIGN_CENTER;
@@ -500,7 +502,142 @@ var playState = {
             game.global.phase = 0;
         }
     },
-    
+
+    resourceSpawner: function() {
+        var resourceAmount = Math.floor(Math.random() * 3) + 1;
+        var resourceTypes = ['antihydrogen', 'heliumthree'];
+        var resourceTypeSelect = Math.floor(Math.random() * 2);
+        var resourceString = resourceTypes[resourceTypeSelect] + resourceAmount.toString();
+        console.log(resourceAmount, resourceTypeSelect, resourceString);
+
+
+        if (game.global.phase === 1){
+            var selectMarker = Math.floor(Math.random() * game.global.friGroup.children.length);
+            var selectedShip = game.global.friGroup.children[selectMarker];
+            var selectedShipGroup = game.global.friGroup.children;
+            var placedShip = false;
+            var spawnedShip = false;
+
+
+            while (spawnedShip === false) {
+                game.global.orbiterGroup.children.forEach(function(ship){
+
+                    if (ship.moveData.atMarker === selectedShip.id){
+                        placedShip = true;
+                        return;
+                    }
+                });
+
+                if (placedShip === false){
+                    var ship = game.global.spawnNewOrbiter(
+                        resourceString,
+                        game.global.searchArrayById(selectedShip.id,game.global.points),
+                        false,
+                        false,
+                        resourceTypeSelect);
+                    spawnedShip = true;
+                    return;
+                }
+
+                selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
+                selectedShip = selectedShipGroup[selectMarker];
+            }
+
+        };
+
+
+        if (game.global.phase === 2){
+            var regionSelect = Math.floor(Math.random() * 2);
+            var selectMarker = 0;
+            if (regionSelect === 0) {
+                var selectMarker = Math.floor(Math.random() * game.global.friGroup.children.length);
+                var selectedShip = game.global.friGroup.children[selectMarker];
+                var selectedShipGroup = game.global.friGroup.children;
+            };
+            if (regionSelect === 1) {
+                var selectMarker = Math.floor(Math.random() * game.global.perGroup.children.length);
+                var selectedShip = game.global.perGroup.children[selectMarker];
+                var selectedShipGroup = game.global.perGroup.children;
+            };
+
+            var placedShip = false;
+            var spawnedShip = false;
+
+            while (spawnedShip === false) {
+                game.global.orbiterGroup.children.forEach(function(ship){
+
+                    if (ship.moveData.atMarker === selectedShip.id){
+                        placedShip = true;
+                        return;
+                    }
+                });
+
+                if (placedShip === false){
+                    var ship = game.global.spawnNewOrbiter(
+                        resourceString,
+                        game.global.searchArrayById(selectedShip.id,game.global.points),
+                        false,
+                        false,
+                        resourceTypeSelect);
+                    spawnedShip = true;
+                    return;
+                }
+
+                selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
+                selectedShip = selectedShipGroup[selectMarker];
+            }
+
+        }
+
+        if (game.global.phase === 3){
+            var regionSelect = Math.floor(Math.random() * 3);
+            var selectMarker = 0;
+            if (regionSelect === 0) {
+                var selectMarker = Math.floor(Math.random() * game.global.friGroup.children.length);
+                var selectedShip = game.global.friGroup.children[selectMarker];
+                var selectedShip = game.global.friGroup.children[selectMarker];
+            };
+            if (regionSelect === 1) {
+                var selectMarker = Math.floor(Math.random() * game.global.perGroup.children.length);
+                var selectedShip = game.global.perGroup.children[selectMarker];
+                var selectedShip = game.global.perGroup.children[selectMarker];
+            };
+            if (regionSelect === 2) {
+                var selectMarker = Math.floor(Math.random() * game.global.corGroup.children.length);
+                var selectedShip = game.global.corGroup.children[selectMarker];
+                var selectedShip = game.global.corGroup.children[selectMarker];
+            };
+
+
+            var placedShip = false;
+            var spawnedShip = false;
+
+            while (spawnedShip === false) {
+                game.global.orbiterGroup.children.forEach(function(ship){
+
+                    if (ship.moveData.atMarker === selectedShip.id){
+                        placedShip = true;
+                        return;
+                    }
+                });
+
+                if (placedShip === false){
+                    var ship = game.global.spawnNewOrbiter(
+                        resourceString,
+                        game.global.searchArrayById(selectedShip.id,game.global.points),
+                        false,
+                        false,
+                        resourceTypeSelect);
+                    spawnedShip = true;
+                    return;
+                }
+
+                selectMarker = Math.floor(Math.random * game.global.friGroup.children.length);
+                selectedShip = selectedShipGroup[selectMarker];
+            }
+        };
+    },
+
     enemySpawner: function() {
         if (game.global.nrEnemyShips < 10) {
             if (game.global.phase === 1){
@@ -566,12 +703,14 @@ var playState = {
                     });
 
                     if (placedShip === false){
-                        game.global.spawnNewOrbiter(
+                        var ship = game.global.spawnNewOrbiter(
                             'enemyship',
                             game.global.searchArrayById(selectedShip.id,game.global.points),
                             '0xB51C04',
-                            null);
+                            null,
+                            'Hound' + game.global.totalNrEnemyShips.toString());
                         game.global.nrEnemyShips += 1;
+                        game.global.totalNrEnemyShips += 1;
                         spawnedShip = true;
                         return;
                     }
@@ -615,12 +754,14 @@ var playState = {
                     });
 
                     if (placedShip === false){
-                        game.global.spawnNewOrbiter(
+                        var ship = game.global.spawnNewOrbiter(
                             'enemyship',
                             game.global.searchArrayById(selectedShip.id,game.global.points),
                             '0xB51C04',
-                            null);
+                            null,
+                            'Hound' + game.global.totalNrEnemyShips.toString());
                         game.global.nrEnemyShips += 1;
+                        game.global.totalNrEnemyShips += 1;
                         spawnedShip = true;
                         return;
                     }

@@ -18,11 +18,20 @@ var bootState = {
         game.load.image('triton', 'assets/triton.png');
         game.load.image('plutocharon', 'assets/plutocharon.png');
         game.load.image('asteroid', 'assets/asteroid.png');
-        
+
+        game.load.image('antihydrogen1', 'assets/resource_antihydrogen_1.png');
+        game.load.image('antihydrogen2', 'assets/resource_antihydrogen_2.png');
+        game.load.image('antihydrogen3', 'assets/resource_antihydrogen_3.png');
+
+        game.load.image('heliumthree1', 'assets/resource_heliumthree_1.png');
+        game.load.image('heliumthree2', 'assets/resource_heliumthree_2.png');
+        game.load.image('heliumthree3', 'assets/resource_heliumthree_3.png');
+
         game.load.image('enemyship', 'assets/enemyship.png');
         game.load.image('friendlyship', 'assets/friendlyship.png');
 
         game.load.image('marker', 'assets/marker.png');
+        game.load.spritesheet('explosion', 'assets/explosion.png', 64, 64, 23);
         
         game.load.spritesheet('enemybutton', 'assets/enemybuttonsheet.png',504,552,3);
         game.load.spritesheet('phase1button', 'assets/phase1sheet.png',348,432,3);

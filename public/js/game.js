@@ -57,7 +57,7 @@ game.global = {
 	
         var orbiter = game.add.sprite(marker.pos.x, marker.pos.y, graphic);
         orbiter.anchor.setTo(0.5, 0.5);
-        orbiter.scale.setTo(0.1,0.1);
+
         orbiter.moveData = {};
         orbiter.inputEnabled = true;
         orbiter.moveData.altitude = 20;
@@ -69,10 +69,24 @@ game.global = {
         orbiter.moveData.startY = marker.pos.y;
         orbiter.moveData.atMarker = marker.id;
         orbiter.moveData.orbit = 0;
-        orbiter.moveData.orbitRate = 1;
         orbiter.selected = false;
-        orbiter.alpha = 0.5;
-        orbiter.tint = tint;
+
+       if ((graphic.toLowerCase().indexOf("antihydrogen") >= 0) ||
+        (graphic.toLowerCase().indexOf("heliumthree") >= 0)) {
+            orbiter.scale.setTo(0.3,0.3);
+            orbiter.moveData.orbitRate = 0;
+            orbiter.alpha = 0.8;
+        } else {
+            orbiter.scale.setTo(0.1,0.1);
+            orbiter.moveData.orbitRate = 1;
+            orbiter.alpha = 0.5;
+        };
+
+
+        if (tint) {
+            orbiter.tint = tint;
+        };
+
         orbiter.shipName = shipName;
         
         orbiter.events.onInputDown.add(function() {
@@ -126,10 +140,25 @@ game.global = {
         }, orbiter);
 
         game.global.kKey.onDown.add(function() {
-            if ((this.selected === true) && (shipName.toLowerCase().indexOf("hound") >= 0)) {
-                this.destroy();
+            var killable = (graphic.toLowerCase().indexOf("enemyship") >= 0) ||
+                (graphic.toLowerCase().indexOf("antihydrogen") >= 0) ||
+                (graphic.toLowerCase().indexOf("heliumthree") >= 0);
+
+            if ((this.selected === true) && killable) {
                 this.selected = false;
-                game.global.nrEnemyShips -= 1;
+
+                if (shipName.toLowerCase().indexOf("hound") >= 0) {
+                    game.global.nrEnemyShips -= 1;
+                    // Kill animation:
+                    // https://github.com/robomatix/Phaser-example-animation-change-before-killing-it/blob/master/index.html
+                    explosion = this.game.add.sprite(
+                        this.x - this.moveData.altitude,
+                        this.y - this.moveData.altitude,
+                        "explosion");
+                    explosion.animations.add('explode');
+                    explosion.animations.play('explode', 20, false, true);
+                };
+                this.destroy();
                 game.global.selectedShipName = '';
                 return true;
             }
