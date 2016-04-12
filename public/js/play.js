@@ -98,7 +98,7 @@ var playState = {
         
         // Earth
         game.global.spawnNewOrbiter(
-        'friendlyship',
+        'earthship',
         game.global.searchArrayById('0c',game.global.points),
         '0x0F497B',
         oneKey,
@@ -112,21 +112,21 @@ var playState = {
         'Mercury');
         // Mars
         game.global.spawnNewOrbiter(
-        'friendlyship',
+        'marsship',
         game.global.searchArrayById('2c',game.global.points),
         '0xf6cb14',
         threeKey,
         'Mars');
         // Europa
         game.global.spawnNewOrbiter(
-        'friendlyship',
+        'europaship',
         game.global.searchArrayById('1p',game.global.points),
         '0x3bbab7',
         fourKey,
         'Europa');
         // Titan
         game.global.spawnNewOrbiter(
-        'friendlyship',
+        'titanship',
         game.global.searchArrayById('2p',game.global.points),
         '0x39e75f',
         fiveKey,
@@ -147,14 +147,14 @@ var playState = {
         'Triton');
         // Pluto and Charon
         game.global.spawnNewOrbiter(
-        'friendlyship',
+        'plutoship',
         game.global.searchArrayById('2f',game.global.points),
         '0xbd0030',
         eightKey,
         'Pluto');
         // Beatrix
         game.global.spawnNewOrbiter(
-        'friendlyship',
+        'beatrixship',
         game.global.searchArrayById('1f',game.global.points),
         '0xd30ef9',
         nienKey,
@@ -184,7 +184,7 @@ var playState = {
         var phaseIndicator = game.add.image(20, 100, game.global.phaseFont);
         phaseIndicator.scale.x = 5;
         phaseIndicator.scale.y = 5;
-        phaseIndicator.visible = true;
+        phaseIndicator.visible = false;
 
         pKey.onDown.add(this.phaseChanger, this);
         eKey.onDown.add(this.enemySpawner, this);
@@ -200,7 +200,7 @@ var playState = {
         var shipCount = game.add.image(20, 200, this.eShipCounter);
         shipCount.scale.x = 5;
         shipCount.scale.y = 5;
-        shipCount.visible = false;
+        shipCount.visible = true;
         hKey.onDown.add(function() {this.toggleDisplay(shipCount)}, this);
 
         this.selectedShip = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
@@ -497,13 +497,13 @@ var playState = {
             }
         });
     },
-    
-    moveOrbiter: function() {
-        
-        orbiter.kill();
-        game.global.spawnNewOrbiter('friendlyship',game.global.selectedMarkers);
-        
-    },
+//
+//    moveOrbiter: function() {
+//
+//        orbiter.kill();
+//        game.global.spawnNewOrbiter('friendlyship',game.global.selectedMarkers);
+//
+//    },
     
     updateOrbiterMovement: function() {
         game.global.orbiterGroup.forEach(function(orbiter) {

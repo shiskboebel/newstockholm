@@ -29,6 +29,21 @@ var bootState = {
 
         game.load.image('enemyship', 'assets/enemyship.png');
         game.load.image('friendlyship', 'assets/friendlyship.png');
+        game.load.image('enemyship_s', 'assets/enemyship_s.png');
+        game.load.image('friendlyship_s', 'assets/friendlyship_s.png');
+
+        game.load.image('earthship_s', 'assets/earthship_s.png');
+        game.load.image('earthship', 'assets/earthship.png');
+        game.load.image('marsship_s', 'assets/marsship_s.png');
+        game.load.image('marsship', 'assets/marsship.png');
+        game.load.image('titanship_s', 'assets/titanship_s.png');
+        game.load.image('titanship', 'assets/titanship.png');
+        game.load.image('europaship_s', 'assets/europaship_s.png');
+        game.load.image('europaship', 'assets/europaship.png');
+        game.load.image('plutoship_s', 'assets/plutoship_s.png');
+        game.load.image('plutoship', 'assets/plutoship.png');
+        game.load.image('beatrixship_s', 'assets/beatrixship_s.png');
+        game.load.image('beatrixship', 'assets/beatrixship.png');
 
         game.load.image('marker', 'assets/marker.png');
         game.load.spritesheet('explosion', 'assets/explosion.png', 64, 64, 23);

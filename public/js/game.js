@@ -70,74 +70,86 @@ game.global = {
         orbiter.moveData.atMarker = marker.id;
         orbiter.moveData.orbit = 0;
         orbiter.selected = false;
+        orbiter.textureName = graphic;
+        orbiter.selectAlpha = 1.0;
+        orbiter.unselectAlpha = 0.5
 
        if ((graphic.toLowerCase().indexOf("antihydrogen") >= 0) ||
         (graphic.toLowerCase().indexOf("heliumthree") >= 0)) {
             orbiter.scale.setTo(0.3,0.3);
             orbiter.moveData.orbitRate = 0;
-            orbiter.alpha = 0.8;
+            orbiter.unselectAlpha = 0.8;
             orbiter.moveData.startX = marker.pos.x - 15;
             orbiter.moveData.startY = marker.pos.y - 15;
         } else {
             orbiter.scale.setTo(0.1,0.1);
             orbiter.moveData.orbitRate = 1;
-            orbiter.alpha = 0.5;
         };
 
+        if ((graphic.indexOf("earthship") >= 0) ||
+            (graphic.indexOf("marsship") >= 0) ||
+            (graphic.indexOf("titanship") >= 0) ||
+            (graphic.indexOf("europaship") >= 0) ||
+            (graphic.indexOf("plutoship") >= 0) ||
+            (graphic.indexOf("beatrixship") >= 0)) {
+            orbiter.scale.setTo(0.3,0.15);
+            orbiter.unselectAlpha = 1.0;
+        };
+
+        orbiter.alpha = orbiter.unselectAlpha;
 
         if (tint) {
             orbiter.tint = tint;
         };
 
         orbiter.shipName = shipName;
-        
-        orbiter.events.onInputDown.add(function() {
+
+        var orbiterSelectFunction = function() {
             if (this.selected === true) {
-                this.alpha = 0.5;
+                this.alpha = this.selectAlpha;
                 this.selected = false;
                 game.global.selectedShipName = '';
+                this.loadTexture(orbiter.textureName.replace('_s',''));
+                this.textureName = this.textureName.replace('_s','');
                 return true;
             }
-            if (this.selected === false){ 
+            if (this.selected === false){
                 game.global.orbiterGroup.forEach(function(orbiter) {
                     orbiter.selected = false;
-                    orbiter.alpha = 0.5;
+                    orbiter.alpha = orbiter.unselectAlpha;
+                    if (orbiter.textureName.indexOf("_s") >= 0) {
+                        orbiter.loadTexture(orbiter.textureName.replace('_s',''));
+                        orbiter.textureName = orbiter.textureName.replace('_s','');
+                    }
                 });
-                this.alpha = 1;
+                this.alpha = this.selectAlpha;
                 this.selected = true;
+                this.textureName = this.textureName + '_s'
+                this.loadTexture(orbiter.textureName);
                 game.global.selectedShipName = this.shipName;
                 return true;
             }
-        }, orbiter);
+        };
+
+        orbiter.events.onInputDown.add(orbiterSelectFunction,orbiter);
 
         if (selectKey) {
-            selectKey.onDown.add(function() {
-                if (this.selected === true) {
-                    this.alpha = 0.5;
-                    this.selected = false;
-                    game.global.selectedShipName = '';
-                    return true;
-                }
-                if (this.selected === false){
-                    game.global.orbiterGroup.forEach(function(orbiter) {
-                        orbiter.selected = false;
-                        orbiter.alpha = 0.5;
-                    });
-                    this.alpha = 1;
-                    this.selected = true;
-                    game.global.selectedShipName = this.shipName;
-                    return true;
-                }
-            }, orbiter);
+            selectKey.onDown.add(orbiterSelectFunction,orbiter);
         }
 
         orbiter.events.onInputOver.add(function() {
-            this.alpha = 1;
+            this.alpha = this.selectAlpha;
+            if (this.selected === false) {
+                this.loadTexture(this.textureName + '_s');
+                this.textureName = this.textureName + '_s';
+            }
         }, orbiter);
 
         orbiter.events.onInputOut.add(function() {
+            this.loadTexture(this.textureName.replace('_s',''));
+            this.textureName = this.textureName.replace('_s','');
             if (this.selected === false) {
-                this.alpha = 0.5;
+                this.alpha = this.unselectAlpha;
             }
         }, orbiter);
 
