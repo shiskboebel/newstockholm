@@ -16,6 +16,9 @@ var playState = {
         var pKey = game.input.keyboard.addKey(Phaser.KeyCode.P);
         var hKey = game.input.keyboard.addKey(Phaser.KeyCode.H);
         var rKey = game.input.keyboard.addKey(Phaser.KeyCode.R);
+        var sKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
+        var gKey = game.input.keyboard.addKey(Phaser.KeyCode.G);
+
         game.global.kKey = game.input.keyboard.addKey(Phaser.KeyCode.K);
 
         var lineKey = game.input.keyboard.addKey(Phaser.KeyCode.L);
@@ -27,7 +30,7 @@ var playState = {
         var sixKey = game.input.keyboard.addKey(Phaser.KeyCode.SIX);
         var sevenKey = game.input.keyboard.addKey(Phaser.KeyCode.SEVEN);
         var eightKey = game.input.keyboard.addKey(Phaser.KeyCode.EIGHT);
-        var nienKey = game.input.keyboard.addKey(Phaser.KeyCode.NINE);
+        var nineKey = game.input.keyboard.addKey(Phaser.KeyCode.NINE);
 
 
 
@@ -94,8 +97,6 @@ var playState = {
         game.world.bringToTop(game.global.planets);
         game.world.bringToTop(game.global.orbiterGroup);
 
-
-        
         // Earth
         game.global.spawnNewOrbiter(
         'earthship',
@@ -157,7 +158,7 @@ var playState = {
         'beatrixship',
         game.global.searchArrayById('1f',game.global.points),
         '0xd30ef9',
-        nienKey,
+        nineKey,
         'Beatrix');
 
         // TODO: Refactor all on-board status text to functions
@@ -184,7 +185,7 @@ var playState = {
         var phaseIndicator = game.add.image(20, 100, game.global.phaseFont);
         phaseIndicator.scale.x = 5;
         phaseIndicator.scale.y = 5;
-        phaseIndicator.visible = false;
+        phaseIndicator.visible = true;
 
         pKey.onDown.add(this.phaseChanger, this);
         eKey.onDown.add(this.enemySpawner, this);
@@ -215,7 +216,21 @@ var playState = {
         shipSelect.scale.y = 5;
         shipSelect.visible = true;
 
+        sKey.onDown.add(function() {
+            localStorage.setItem('phase', game.global.phase.toString());
+            localStorage.setItem('saved', 'true');
 
+            game.global.orbiterGroup.forEach(function(orbiter) {
+            // Save position data of all orbiters
+            }
+        }, this);
+
+        var saved = localStorage.getItem('saved');
+        if (saved === 'true') {
+            game.global.phase = parseInt(localStorage.getItem('phase'));
+        }
+
+        console.log(game.global.orbiterGroup);
 	},
 
 	update: function() {

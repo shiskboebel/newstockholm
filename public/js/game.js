@@ -91,10 +91,19 @@ game.global = {
             (graphic.indexOf("titanship") >= 0) ||
             (graphic.indexOf("europaship") >= 0) ||
             (graphic.indexOf("plutoship") >= 0) ||
-            (graphic.indexOf("beatrixship") >= 0)) {
+            (graphic.indexOf("beatrixship") >= 0) ||
+            (graphic.indexOf("plutoship") >= 0))  {
             orbiter.scale.setTo(0.3,0.15);
             orbiter.unselectAlpha = 1.0;
         };
+
+        if (graphic.indexOf("enemyship") >= 0) {
+            orbiter.unselectAlpha = 1.0;
+            var style = { font: "150px Arial", fill: "#ffffff" };
+            var label_score = game.add.text(20, 20, game.global.totalNrEnemyShips, style);
+            console.log(label_score);
+            orbiter.addChild(label_score);
+        }
 
         orbiter.alpha = orbiter.unselectAlpha;
 
@@ -146,10 +155,10 @@ game.global = {
         }, orbiter);
 
         orbiter.events.onInputOut.add(function() {
-            this.loadTexture(this.textureName.replace('_s',''));
-            this.textureName = this.textureName.replace('_s','');
             if (this.selected === false) {
                 this.alpha = this.unselectAlpha;
+                this.loadTexture(this.textureName.replace('_s',''));
+                this.textureName = this.textureName.replace('_s','');
             }
         }, orbiter);
 
