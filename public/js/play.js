@@ -216,26 +216,129 @@ var playState = {
         shipSelect.scale.y = 5;
         shipSelect.visible = true;
 
+        // TODO: Refactor save function to use objects and behave more generically
         sKey.onDown.add(function() {
             localStorage.setItem('phase', game.global.phase.toString());
             localStorage.setItem('saved', 'true');
 
+            var planetships = [];
+            var enemyships = [];
+            var resourceNames = [];
+            var resourceMarkers = [];
             game.global.orbiterGroup.forEach(function(orbiter) {
             // Save position data of all orbiters
-            }
+                if (orbiter.shipName === 'Earth') {
+                    planetships.earth = orbiter.moveData.atMarker;
+                }
+                if (orbiter.shipName === 'Mars') {
+                    planetships.mars = orbiter.moveData.atMarker;
+                }
+
+                if (orbiter.shipName === 'Mercury') {
+                    planetships.mercury = orbiter.moveData.atMarker;
+                }
+
+                if (orbiter.shipName === 'Titan') {
+                    planetships.titan = orbiter.moveData.atMarker;
+                }
+
+                if (orbiter.shipName === 'Europa') {
+                    planetships.europa = orbiter.moveData.atMarker;
+                }
+
+                if (orbiter.shipName === 'Triton') {
+                    planetships.triton = orbiter.moveData.atMarker;
+                }
+
+                if (orbiter.shipName === 'Miranda') {
+                    planetships.miranda = orbiter.moveData.atMarker;
+                }
+
+                if (orbiter.shipName === 'Pluto') {
+                    planetships.pluto = orbiter.moveData.atMarker;
+                }
+                if (orbiter.shipName === 'Beatrix') {
+                    planetships.beatrix = orbiter.moveData.atMarker;
+                }
+                if (orbiter.shipName.toString().indexOf("Hound") >= 0) {
+                    enemyships.push(orbiter.moveData.atMarker)
+                }
+                if (orbiter.textureName.indexOf("heliumthree") >= 0 ||
+                   orbiter.textureName.indexOf("antihydrogen") >= 0) {
+
+                   resourceNames.push(orbiter.textureName);
+                   resourceMarkers.push(orbiter.moveData.atMarker);
+                }
+
+            });
+
+            localStorage.setItem('planetships', [planetships.earth,planetships.mars,planetships.mercury,
+            planetships.titan,planetships.europa,planetships.triton,planetships.miranda,planetships.pluto,
+            planetships.beatrix]);
+
+            localStorage.setItem('enemyships', enemyships);
+            localStorage.setItem('resourceNames', resourceNames);
+            localStorage.setItem('resourceMarkers', resourceMarkers);
+
         }, this);
 
         var saved = localStorage.getItem('saved');
         if (saved === 'true') {
             game.global.phase = parseInt(localStorage.getItem('phase'));
-        }
+            var ships = localStorage.getItem('planetships').split(',');
+            var enemies = localStorage.getItem('enemyships').split(',');
+            var resourceNames = localStorage.getItem('resourceNames').split(',');
+            var resourceMarkers = localStorage.getItem('resourceMarkers').split(',');
 
-        console.log(game.global.orbiterGroup);
+            // Move fleets to saved markers in the following order:
+            // Earth,Mars,Mercury,Titan,Europa,Triton,Miranda,Pluto,Beatrix
+            for (var i = 0; i < 9; i++) {
+                var marker = game.global.searchArrayById(ships[i],game.global.points);
+                game.global.orbiterGroup.children[i].moveData.startX =
+                marker.pos.x;
+
+                game.global.orbiterGroup.children[i].moveData.startY =
+                marker.pos.y;
+            }
+
+            // TODO: Implement rigorous check if enemy ships or resources exist.
+            if (enemies && enemies.length > 0) {
+                for (var i = 0; i < enemies.length; i++) {
+                    if (!(enemies[i] === ("" || "undefined" || "false" || "null" || null || false ))) {
+                        game.global.spawnNewOrbiter(
+                            'enemyship',
+                            game.global.searchArrayById(enemies[i],game.global.points),
+                            '0xB51C04',
+                            null,
+                            'Hound' + game.global.totalNrEnemyShips.toString());
+                        game.global.nrEnemyShips += 1;
+                        game.global.totalNrEnemyShips += 1;
+
+                    }
+                }
+            }
+
+            if (resourceMarkers && resourceMarkers.length > 0) {
+                if (resourceMarkers.length === resourceNames.length ) {
+                    for (var i = 0; i < resourceNames.length; i++) {
+                        if (!(resourceMarkers[i] === ("" || "undefined" || "false" || "null" || null || false ))) {
+                            game.global.spawnNewOrbiter(
+                            resourceNames[i],
+                            game.global.searchArrayById(resourceMarkers[i],game.global.points),
+                            false,
+                            false,
+                            resourceNames[i]);
+                        }
+                    }
+                } else {
+                    console.log('Resource markers not same length as resource names.');
+                }
+            }
+        }
 	},
 
 	update: function() {
         this.updateOrbiterMovement();
-//        this.drawMinimap();
 	},
     
     render: function() {
@@ -424,6 +527,7 @@ var playState = {
                         this.selected = true;
                         game.global.orbiterGroup.forEach(function(orbiter) {
                             if (orbiter.selected) {
+                                orbiter.moveData.atMarker = game.global.selectedMarkers[0].id;
                                 orbiter.moveData.startX = game.global.selectedMarkers[0].pos.x;
                                 orbiter.moveData.startY = game.global.selectedMarkers[0].pos.y;
                             }
@@ -435,11 +539,11 @@ var playState = {
     },
         
     markerLogger: function() {
-            console.log(game.global.points);
+//            console.log(game.global.points);
     },
     
     connectionLogger: function() {
-            console.log(game.global.connectedMarkers);
+//            console.log(game.global.connectedMarkers);
     },
     
     connectMarkers: function() {
@@ -563,7 +667,6 @@ var playState = {
         var resourceTypes = ['antihydrogen', 'heliumthree', 'heliumthree'];
         var resourceTypeSelect = Math.floor(Math.random() * 3);
         var resourceString = resourceTypes[resourceTypeSelect] + resourceAmount.toString();
-        console.log(resourceAmount, resourceTypeSelect, resourceString);
 
 
         if (game.global.phase === 1){
@@ -704,9 +807,11 @@ var playState = {
                 while (spawnedShip === false) {
                     game.global.orbiterGroup.children.forEach(function(ship){
 
-                        if (ship.moveData.atMarker === selectedShip.id){
-                            placedShip = true;
-                            return;
+                        if (selectedShip.id) {
+                            if (ship.moveData.atMarker === selectedShip.id){
+                                placedShip = true;
+                                return;
+                            }
                         }
                     });
 
