@@ -7,7 +7,24 @@ var playState = {
         
         // Set a background color and the physic system
         var background = game.add.tileSprite(0,0, 1920, 1080, 'background');
-        
+
+        // Draw status screen rectangle
+        var statusRect = game.add.graphics(0,0);
+        statusRect.beginFill(0x99ccff);
+        statusRect.lineStyle(2, 0x0000FF, 1);
+        statusRect.drawRect(0, 0, 500, 1080);
+        statusRect.alpha = 0.7;
+
+        var statusTitle = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        statusTitle.align = Phaser.RetroFont.ALIGN_CENTER;
+        statusTitle.multiLine = true;
+        statusTitle.autoUpperCase = false;
+        statusTitle.text = 'Status:';
+        var statusTitleImage = game.add.image(10, 30, statusTitle);
+        statusTitleImage.scale.x = 5;
+        statusTitleImage.scale.y = 5;
+        statusTitleImage.visible = true;
+
         // Keys
         var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         var cKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
@@ -183,8 +200,8 @@ var playState = {
         game.global.phaseFont.text = 'Phase: ' + game.global.phase.toString();
         game.global.phaseFont.buildRetroFontText();
         var phaseIndicator = game.add.image(20, 100, game.global.phaseFont);
-        phaseIndicator.scale.x = 5;
-        phaseIndicator.scale.y = 5;
+        phaseIndicator.scale.x = 3;
+        phaseIndicator.scale.y = 3;
         phaseIndicator.visible = true;
 
         pKey.onDown.add(this.phaseChanger, this);
@@ -199,9 +216,9 @@ var playState = {
         this.eShipCounter.buildRetroFontText();
 
         var shipCount = game.add.image(20, 200, this.eShipCounter);
-        shipCount.scale.x = 5;
-        shipCount.scale.y = 5;
-        shipCount.visible = true;
+        shipCount.scale.x = 3;
+        shipCount.scale.y = 3;
+        shipCount.visible = false;
         hKey.onDown.add(function() {this.toggleDisplay(shipCount)}, this);
 
         this.selectedShip = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
@@ -212,8 +229,8 @@ var playState = {
         this.selectedShip.buildRetroFontText();
 
         var shipSelect = game.add.image(20, 150, this.selectedShip);
-        shipSelect.scale.x = 5;
-        shipSelect.scale.y = 5;
+        shipSelect.scale.x = 3;
+        shipSelect.scale.y = 3;
         shipSelect.visible = true;
 
         // TODO: Refactor save function to use objects and behave more generically
