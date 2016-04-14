@@ -45,6 +45,12 @@ var bootState = {
         game.load.image('beatrixship_s', 'assets/beatrixship_s.png');
         game.load.image('beatrixship', 'assets/beatrixship.png');
 
+        game.load.image('earthflag', 'assets/earthflag.png');
+        game.load.image('marsflag', 'assets/marsflag.png');
+        game.load.image('titanflag', 'assets/titanflag.png');
+        game.load.image('europaflag', 'assets/europaflag.png');
+        game.load.image('plutoflag', 'assets/plutoflag.png');
+        game.load.image('beatrixflag', 'assets/beatrixflag.png');
 
         game.load.image('marker', 'assets/marker.png');
         game.load.spritesheet('explosion', 'assets/explosion.png', 64, 64, 23);

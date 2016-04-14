@@ -25,6 +25,29 @@ var playState = {
         statusTitleImage.scale.y = 5;
         statusTitleImage.visible = true;
 
+        var selectedTitle = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        selectedTitle.align = Phaser.RetroFont.ALIGN_CENTER;
+        selectedTitle.multiLine = true;
+        selectedTitle.autoUpperCase = false;
+        selectedTitle.text = 'Selected:';
+        var selectedTitleImage = game.add.image(10, 600, selectedTitle);
+        selectedTitleImage.scale.x = 5;
+        selectedTitleImage.scale.y = 5;
+        selectedTitleImage.visible = true;
+
+        game.global.selectedFlag = game.add.image(20, 700, null);
+        game.global.selectedFlag.scale.x = 0.5;
+        game.global.selectedFlag.scale.y = 0.5;
+
+        game.global.shadow = game.add.sprite(30, 710, 'earthflag');
+        game.global.shadow.tint = 0x000000;
+        game.global.shadow.scale.x = 0.5;
+        game.global.shadow.scale.y = 0.5;
+        game.global.shadow.alpha = 0.6;
+        game.global.shadow.visible = false;
+
+
+
         // Keys
         var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         var cKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
@@ -35,6 +58,7 @@ var playState = {
         var rKey = game.input.keyboard.addKey(Phaser.KeyCode.R);
         var sKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
         var gKey = game.input.keyboard.addKey(Phaser.KeyCode.G);
+        var mKey = game.input.keyboard.addKey(Phaser.KeyCode.M);
 
         game.global.kKey = game.input.keyboard.addKey(Phaser.KeyCode.K);
 
@@ -113,6 +137,7 @@ var playState = {
 
         game.world.bringToTop(game.global.planets);
         game.world.bringToTop(game.global.orbiterGroup);
+        game.world.bringToTop(game.global.selectedFlag);
 
         // Earth
         game.global.spawnNewOrbiter(
@@ -225,13 +250,21 @@ var playState = {
         this.selectedShip.align = Phaser.RetroFont.ALIGN_CENTER;
         this.selectedShip.multiLine = true;
         this.selectedShip.autoUpperCase = false;
-        this.selectedShip.text = 'Selected: ' + game.global.selectedShipName;
+        this.selectedShip.text = game.global.selectedShipName;
         this.selectedShip.buildRetroFontText();
 
-        var shipSelect = game.add.image(20, 150, this.selectedShip);
+        var shipSelect = game.add.image(20, 660, this.selectedShip);
         shipSelect.scale.x = 3;
         shipSelect.scale.y = 3;
         shipSelect.visible = true;
+
+        mKey.onDown.add(function() {
+            this.toggleDisplay(shipSelect);
+            this.toggleDisplay(statusRect);
+            this.toggleDisplay(phaseIndicator);
+            this.toggleDisplay(selectedTitleImage);
+            this.toggleDisplay(statusTitleImage);
+        }, this);
 
         // TODO: Refactor save function to use objects and behave more generically
         sKey.onDown.add(function() {
@@ -363,7 +396,7 @@ var playState = {
             // Render status text
             game.global.phaseFont.text = 'Phase: ' + game.global.phase.toString();
             this.eShipCounter.text = 'Hound Ships: ' + game.global.nrEnemyShips.toString();
-            this.selectedShip.text = 'Selected: ' + game.global.selectedShipName;
+            this.selectedShip.text = game.global.selectedShipName;
 
             // Render countdown timer
             if (game.global.countdownTimerTime && game.global.countdownTimerTime.running) {

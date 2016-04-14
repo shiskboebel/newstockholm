@@ -34,6 +34,8 @@ game.global = {
     topLayer: null,
     Xfont: null,
     phaseFont: null,
+    selectedFlag: null,
+    shadow: null,
     countdownTimerTime: null,
     timerEvent: null,
     kKey: '',
@@ -118,6 +120,8 @@ game.global = {
                 this.alpha = this.selectAlpha;
                 this.selected = false;
                 game.global.selectedShipName = '';
+                game.global.selectedFlag.loadTexture(null);
+                game.global.shadow.visible = false;
                 this.loadTexture(orbiter.textureName.replace('_s',''));
                 this.textureName = this.textureName.replace('_s','');
                 return true;
@@ -133,9 +137,18 @@ game.global = {
                 });
                 this.alpha = this.selectAlpha;
                 this.selected = true;
-                this.textureName = this.textureName + '_s'
+                if (!((graphic.toLowerCase().indexOf("antihydrogen") >= 0) ||
+                     (graphic.toLowerCase().indexOf("heliumthree") >= 0))) {
+                    this.textureName = this.textureName + '_s'
+                }
                 this.loadTexture(orbiter.textureName);
                 game.global.selectedShipName = this.shipName;
+                if (!((graphic.toLowerCase().indexOf("antihydrogen") >= 0) ||
+                      (graphic.toLowerCase().indexOf("heliumthree") >= 0) ||
+                      (graphic.toLowerCase().indexOf("enemyship") >= 0))) {
+                    game.global.selectedFlag.loadTexture(this.shipName.toLowerCase() + 'flag');
+                    game.global.shadow.visible = true;
+                }
                 return true;
             }
         };
@@ -149,16 +162,22 @@ game.global = {
         orbiter.events.onInputOver.add(function() {
             this.alpha = this.selectAlpha;
             if (this.selected === false) {
-                this.loadTexture(this.textureName + '_s');
-                this.textureName = this.textureName + '_s';
+                if (!((graphic.toLowerCase().indexOf("antihydrogen") >= 0) ||
+                     (graphic.toLowerCase().indexOf("heliumthree") >= 0))) {
+                    this.loadTexture(this.textureName + '_s');
+                    this.textureName = this.textureName + '_s';
+                }
             }
         }, orbiter);
 
         orbiter.events.onInputOut.add(function() {
             if (this.selected === false) {
                 this.alpha = this.unselectAlpha;
-                this.loadTexture(this.textureName.replace('_s',''));
-                this.textureName = this.textureName.replace('_s','');
+                if (!((graphic.toLowerCase().indexOf("antihydrogen") >= 0) ||
+                     (graphic.toLowerCase().indexOf("heliumthree") >= 0))) {
+                    this.loadTexture(this.textureName.replace('_s',''));
+                    this.textureName = this.textureName.replace('_s','');
+                }
             }
         }, orbiter);
 
@@ -183,6 +202,8 @@ game.global = {
                 };
                 this.destroy();
                 game.global.selectedShipName = '';
+                game.global.selectedFlag.loadTexture(null);
+                game.global.shadow.visible = false;
                 return true;
             }
         }, orbiter);
