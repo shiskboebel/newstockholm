@@ -84,7 +84,7 @@ var playState = {
         var fKey = game.input.keyboard.addKey(Phaser.KeyCode.F);
         var aKey = game.input.keyboard.addKey(Phaser.KeyCode.A);
         var jKey = game.input.keyboard.addKey(Phaser.KeyCode.J);
-        var wKey = game.input.keyboard.addKey(Phaser.KeyCode.W);
+        var questionKey = game.input.keyboard.addKey(Phaser.KeyCode.QUESTION_MARK);
 
         var numOneKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_1);
         var numTwoKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_2);
@@ -97,7 +97,7 @@ var playState = {
         numFourKey.onDown.add(function() {game.global.dreadnaughtFunds += 10000}, this);
         numFiveKey.onDown.add(function() {game.global.dreadnaughtFunds -= 10000}, this);
 
-        wKey.onDown.add(function() {
+        questionKey.onDown.add(function() {
 
             game.global.orbiterGroup.forEach(function(orbiter) {
                 if (orbiter.shipName.toString().indexOf("Hound") >= 0) {
@@ -292,7 +292,7 @@ var playState = {
         game.global.phaseFont.align = Phaser.RetroFont.ALIGN_CENTER;
         game.global.phaseFont.multiLine = true;
         game.global.phaseFont.autoUpperCase = false;
-        game.global.phaseFont.text = 'Phase: ' + game.global.phase.toString();
+        game.global.phaseFont.text = 'Phase: ' + (game.global.phase - 2).toString();
         game.global.phaseFont.buildRetroFontText();
         var phaseIndicator = game.add.image(20, 100, game.global.phaseFont);
         phaseIndicator.scale.x = 3;
@@ -444,7 +444,7 @@ var playState = {
     render: function() {
 
             // Render status text
-            game.global.phaseFont.text = 'Phase: ' + game.global.phase.toString();
+            game.global.phaseFont.text = 'Phase: ' + (game.global.phase - 2).toString();
             this.eShipCounter.text = 'Hound Ships: ' + game.global.nrEnemyShips.toString();
             this.selectedShip.text = game.global.selectedShipName;
             this.dreadnaughtText.text = 'Dreadnaught Progress: \n \n'  + game.global.dreadnaughtResources + ' Antihydrogen,\n' + game.global.dreadnaughtFunds + ' Credits';
@@ -759,6 +759,10 @@ var playState = {
         } else if (game.global.phase === 2) {
             game.global.phase = 3;
         } else if (game.global.phase === 3) {
+            game.global.phase = 4;
+        } else if (game.global.phase === 4) {
+            game.global.phase = 5;
+        } else if (game.global.phase === 5) {
             game.global.phase = 0;
         } else {
             game.global.phase = 0;
