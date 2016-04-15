@@ -26,6 +26,8 @@ game.global = {
     sunGroup: null,
     enemyShipGroup: null,
     lineGroup: null,
+    dreadnaughtResources: 0,
+    dreadnaughtFunds: 0,
     nrEnemyShips : 0,
     totalNrEnemyShips: 0,
     phase1button: null,

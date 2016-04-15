@@ -10,8 +10,8 @@ var playState = {
 
         // Draw status screen rectangle
         var statusRect = game.add.graphics(0,0);
-        statusRect.beginFill(0x99ccff);
-        statusRect.lineStyle(2, 0x0000FF, 1);
+        statusRect.beginFill(0x800040);
+        statusRect.lineStyle(2, 0x0000FF, 0);
         statusRect.drawRect(0, 0, 500, 1080);
         statusRect.alpha = 0.7;
 
@@ -24,6 +24,16 @@ var playState = {
         statusTitleImage.scale.x = 5;
         statusTitleImage.scale.y = 5;
         statusTitleImage.visible = true;
+
+        var timerTitle = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        timerTitle.align = Phaser.RetroFont.ALIGN_CENTER;
+        timerTitle.multiLine = true;
+        timerTitle.autoUpperCase = false;
+        timerTitle.text = 'Timer:';
+        var timerTitleImage = game.add.image(10, 300, timerTitle);
+        timerTitleImage.scale.x = 5;
+        timerTitleImage.scale.y = 5;
+        timerTitleImage.visible = true;
 
         var selectedTitle = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
         selectedTitle.align = Phaser.RetroFont.ALIGN_CENTER;
@@ -59,6 +69,20 @@ var playState = {
         var sKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
         var gKey = game.input.keyboard.addKey(Phaser.KeyCode.G);
         var mKey = game.input.keyboard.addKey(Phaser.KeyCode.M);
+        var fKey = game.input.keyboard.addKey(Phaser.KeyCode.F);
+        var aKey = game.input.keyboard.addKey(Phaser.KeyCode.A);
+        var jKey = game.input.keyboard.addKey(Phaser.KeyCode.J);
+
+        var numOneKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_1);
+        var numTwoKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_2);
+        var numFourKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_4);
+        var numFiveKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_5);
+
+        numOneKey.onDown.add(function() {game.global.dreadnaughtResources++}, this);
+        numTwoKey.onDown.add(function() {game.global.dreadnaughtResources--}, this);
+
+        numFourKey.onDown.add(function() {game.global.dreadnaughtFunds += 1000}, this);
+        numFiveKey.onDown.add(function() {game.global.dreadnaughtFunds += 1000}, this);
 
         game.global.kKey = game.input.keyboard.addKey(Phaser.KeyCode.K);
 
@@ -209,15 +233,18 @@ var playState = {
         game.global.Xfont.multiLine = true;
         game.global.Xfont.autoUpperCase = false;
         game.global.Xfont.buildRetroFontText();
-        var image = game.add.image(1500, 100, game.global.Xfont);
+        var image = game.add.image(20, 400, game.global.Xfont);
         image.scale.x = 10;
         image.scale.y = 10;
         image.visible = false;
         // Countdown for ten minutes
         cKey.onDown.add(this.countdownTimer, this);
+        aKey.onDown.add(this.shortCountdownTimer, this);
+        fKey.onDown.add(this.stopTimer, this);
         // http://www.html5gamedevs.com/topic/3541-listener-functions-how-do-i-properly-use-them/
         dKey.onDown.add(function() {this.toggleDisplay(image)}, this);
 
+        // TODO: Put these in a function and put status text in group to toggle visibility on entire group.
         game.global.phaseFont = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
         game.global.phaseFont.align = Phaser.RetroFont.ALIGN_CENTER;
         game.global.phaseFont.multiLine = true;
@@ -240,7 +267,7 @@ var playState = {
         this.eShipCounter.text = 'Hound Ships: ' + game.global.nrEnemyShips.toString();
         this.eShipCounter.buildRetroFontText();
 
-        var shipCount = game.add.image(20, 200, this.eShipCounter);
+        var shipCount = game.add.image(20, 140, this.eShipCounter);
         shipCount.scale.x = 3;
         shipCount.scale.y = 3;
         shipCount.visible = false;
@@ -258,12 +285,26 @@ var playState = {
         shipSelect.scale.y = 3;
         shipSelect.visible = true;
 
+        this.dreadnaughtText = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        this.dreadnaughtText.align = Phaser.RetroFont.ALIGN_CENTER;
+        this.dreadnaughtText.multiLine = true;
+        this.dreadnaughtText.autoUpperCase = false;
+        this.dreadnaughtText.text = 'Dreadnaught Progress: \n \n' + game.global.dreadnaughtResources + ' Antihydrogen,\n' + game.global.dreadnaughtFunds + ' Credits';
+        this.dreadnaughtText.buildRetroFontText();
+
+        var dreadnaughtTextImage = game.add.image(15, 180, this.dreadnaughtText);
+        dreadnaughtTextImage.scale.x = 3;
+        dreadnaughtTextImage.scale.y = 3;
+        dreadnaughtTextImage.visible = false;
+        jKey.onDown.add(function() {this.toggleDisplay(dreadnaughtTextImage)}, this);
+
         mKey.onDown.add(function() {
             this.toggleDisplay(shipSelect);
             this.toggleDisplay(statusRect);
             this.toggleDisplay(phaseIndicator);
             this.toggleDisplay(selectedTitleImage);
             this.toggleDisplay(statusTitleImage);
+            this.toggleDisplay(timerTitleImage);
         }, this);
 
         // TODO: Refactor save function to use objects and behave more generically
@@ -354,30 +395,40 @@ var playState = {
             // TODO: Implement rigorous check if enemy ships or resources exist.
             if (enemies && enemies.length > 0) {
                 for (var i = 0; i < enemies.length; i++) {
-                    if (!(enemies[i] === ("" || "undefined" || "false" || "null" || null || false ))) {
-                        game.global.spawnNewOrbiter(
-                            'enemyship',
-                            game.global.searchArrayById(enemies[i],game.global.points),
-                            '0xB51C04',
-                            null,
-                            'Hound' + game.global.totalNrEnemyShips.toString());
-                        game.global.nrEnemyShips += 1;
-                        game.global.totalNrEnemyShips += 1;
+                    if (!(enemies[i].trim() === ("\"\"" || "\" \"" || " " ||
+                    "" || "undefined" || "false" || "null" || null || false ))) {
+                        var enemyMarker = game.global.searchArrayById(enemies[i],game.global.points);
+                        if (enemyMarker) {
+                            game.global.spawnNewOrbiter(
+                                'enemyship',
+                                enemyMarker,
+                                '0xB51C04',
+                                null,
+                                'Hound' + game.global.totalNrEnemyShips.toString());
+                            game.global.nrEnemyShips += 1;
+                            game.global.totalNrEnemyShips += 1;
+                        }
 
                     }
                 }
             }
 
             if (resourceMarkers && resourceMarkers.length > 0) {
-                if (resourceMarkers.length === resourceNames.length ) {
+                if ((resourceMarkers.length === resourceNames.length) && resourceNames) {
                     for (var i = 0; i < resourceNames.length; i++) {
-                        if (!(resourceMarkers[i] === ("" || "undefined" || "false" || "null" || null || false ))) {
-                            game.global.spawnNewOrbiter(
-                            resourceNames[i],
-                            game.global.searchArrayById(resourceMarkers[i],game.global.points),
-                            false,
-                            false,
-                            resourceNames[i]);
+                        if (!(resourceMarkers[i].trim() === ("\"\"" || "\" \"" || " " ||
+                        "" || "undefined" || "false" || "null" || null || false ))) {
+
+                            var resourceMarker = game.global.searchArrayById(resourceMarkers[i],game.global.points);
+
+                            if (resourceMarker) {
+                                game.global.spawnNewOrbiter(
+                                resourceNames[i],
+                                resourceMarker,
+                                false,
+                                false,
+                                resourceNames[i]);
+                            }
                         }
                     }
                 } else {
@@ -397,6 +448,7 @@ var playState = {
             game.global.phaseFont.text = 'Phase: ' + game.global.phase.toString();
             this.eShipCounter.text = 'Hound Ships: ' + game.global.nrEnemyShips.toString();
             this.selectedShip.text = game.global.selectedShipName;
+            this.dreadnaughtText.text = 'Dreadnaught Progress: \n \n'  + game.global.dreadnaughtResources + ' Antihydrogen,\n' + game.global.dreadnaughtFunds + ' Credits';
 
             // Render countdown timer
             if (game.global.countdownTimerTime && game.global.countdownTimerTime.running) {
@@ -1018,7 +1070,22 @@ var playState = {
                 game.global.countDownTimeSeconds.toString();
         } else {
             game.time.events.stop();
+
         };
+    },
+
+    stopTimer: function() {
+        this.endTimer();
+        game.global.Xfont.text = '00:00';
+    },
+
+    shortCountdownTimer: function() {
+
+            game.global.countdownTimerTime = game.time.create();
+            game.global.timerEvent = game.global.countdownTimerTime.add(Phaser.Timer.MINUTE * 0.5, this.endTimer, this);
+
+            // Start the timer
+            game.global.countdownTimerTime.start();
     },
 
     countdownTimer: function() {
