@@ -58,6 +58,18 @@ var playState = {
 
 
 
+        var gamerTitle = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        gamerTitle.align = Phaser.RetroFont.ALIGN_CENTER;
+
+        gamerTitle.multiLine = true;
+        gamerTitle.autoUpperCase = false;
+        gamerTitle.text = 'Congratulations!';
+        var gamerTitleImage = game.add.image(game.world.centerX, game.world.centerY, gamerTitle);
+        gamerTitleImage.scale.x = 5;
+        gamerTitleImage.scale.y = 5;
+        gamerTitleImage.tint = 0x2b0aff;
+        gamerTitleImage.visible = false;
+
         // Keys
         var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         var cKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
@@ -72,6 +84,7 @@ var playState = {
         var fKey = game.input.keyboard.addKey(Phaser.KeyCode.F);
         var aKey = game.input.keyboard.addKey(Phaser.KeyCode.A);
         var jKey = game.input.keyboard.addKey(Phaser.KeyCode.J);
+        var wKey = game.input.keyboard.addKey(Phaser.KeyCode.W);
 
         var numOneKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_1);
         var numTwoKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_2);
@@ -81,8 +94,39 @@ var playState = {
         numOneKey.onDown.add(function() {game.global.dreadnaughtResources++}, this);
         numTwoKey.onDown.add(function() {game.global.dreadnaughtResources--}, this);
 
-        numFourKey.onDown.add(function() {game.global.dreadnaughtFunds += 1000}, this);
-        numFiveKey.onDown.add(function() {game.global.dreadnaughtFunds += 1000}, this);
+        numFourKey.onDown.add(function() {game.global.dreadnaughtFunds += 10000}, this);
+        numFiveKey.onDown.add(function() {game.global.dreadnaughtFunds -= 10000}, this);
+
+        wKey.onDown.add(function() {
+
+            game.global.orbiterGroup.forEach(function(orbiter) {
+                if (orbiter.shipName.toString().indexOf("Hound") >= 0) {
+                    game.global.nrEnemyShips -= 1;
+                    // Kill animation:
+                    // https://github.com/robomatix/Phaser-example-animation-change-before-killing-it/blob/master/index.html
+                    var explosion = this.game.add.sprite(
+                        this.x - this.moveData.altitude,
+                        this.y - this.moveData.altitude,
+                        "explosion");
+                    explosion.animations.add('explode');
+                    explosion.animations.play('explode', 20, false, true);
+                    orbiter.destroy();
+                };
+            });
+
+            var explosion = this.game.add.sprite(
+                game.world.centerX,
+                game.world.centerY,
+                "explosion");
+
+            explosion.scale.x = 10;
+            explosion.scale.y = 10;
+            explosion.animations.add('explode');
+            explosion.animations.play('explode', 20, false, true);
+            this.toggleDisplay(gamerTitleImage);
+
+        }, this);
+
 
         game.global.kKey = game.input.keyboard.addKey(Phaser.KeyCode.K);
 
@@ -96,8 +140,6 @@ var playState = {
         var sevenKey = game.input.keyboard.addKey(Phaser.KeyCode.SEVEN);
         var eightKey = game.input.keyboard.addKey(Phaser.KeyCode.EIGHT);
         var nineKey = game.input.keyboard.addKey(Phaser.KeyCode.NINE);
-
-
 
         game.global.planets = game.add.group();
         game.global.orbiterGroup = game.add.group();
@@ -162,6 +204,7 @@ var playState = {
         game.world.bringToTop(game.global.planets);
         game.world.bringToTop(game.global.orbiterGroup);
         game.world.bringToTop(game.global.selectedFlag);
+        game.world.bringToTop(gamerTitleImage);
 
         // Earth
         game.global.spawnNewOrbiter(
@@ -308,78 +351,34 @@ var playState = {
         }, this);
 
         // TODO: Refactor save function to use objects and behave more generically
-        sKey.onDown.add(function() {
-            localStorage.setItem('phase', game.global.phase.toString());
-            localStorage.setItem('saved', 'true');
-
-            var planetships = [];
-            var enemyships = [];
-            var resourceNames = [];
-            var resourceMarkers = [];
-            game.global.orbiterGroup.forEach(function(orbiter) {
-            // Save position data of all orbiters
-                if (orbiter.shipName === 'Earth') {
-                    planetships.earth = orbiter.moveData.atMarker;
-                }
-                if (orbiter.shipName === 'Mars') {
-                    planetships.mars = orbiter.moveData.atMarker;
-                }
-
-                if (orbiter.shipName === 'Mercury') {
-                    planetships.mercury = orbiter.moveData.atMarker;
-                }
-
-                if (orbiter.shipName === 'Titan') {
-                    planetships.titan = orbiter.moveData.atMarker;
-                }
-
-                if (orbiter.shipName === 'Europa') {
-                    planetships.europa = orbiter.moveData.atMarker;
-                }
-
-                if (orbiter.shipName === 'Triton') {
-                    planetships.triton = orbiter.moveData.atMarker;
-                }
-
-                if (orbiter.shipName === 'Miranda') {
-                    planetships.miranda = orbiter.moveData.atMarker;
-                }
-
-                if (orbiter.shipName === 'Pluto') {
-                    planetships.pluto = orbiter.moveData.atMarker;
-                }
-                if (orbiter.shipName === 'Beatrix') {
-                    planetships.beatrix = orbiter.moveData.atMarker;
-                }
-                if (orbiter.shipName.toString().indexOf("Hound") >= 0) {
-                    enemyships.push(orbiter.moveData.atMarker)
-                }
-                if (orbiter.textureName.indexOf("heliumthree") >= 0 ||
-                   orbiter.textureName.indexOf("antihydrogen") >= 0) {
-
-                   resourceNames.push(orbiter.textureName);
-                   resourceMarkers.push(orbiter.moveData.atMarker);
-                }
-
-            });
-
-            localStorage.setItem('planetships', [planetships.earth,planetships.mars,planetships.mercury,
-            planetships.titan,planetships.europa,planetships.triton,planetships.miranda,planetships.pluto,
-            planetships.beatrix]);
-
-            localStorage.setItem('enemyships', enemyships);
-            localStorage.setItem('resourceNames', resourceNames);
-            localStorage.setItem('resourceMarkers', resourceMarkers);
-
-        }, this);
+        sKey.onDown.add(this.saveData, this);
 
         var saved = localStorage.getItem('saved');
         if (saved === 'true') {
             game.global.phase = parseInt(localStorage.getItem('phase'));
-            var ships = localStorage.getItem('planetships').split(',');
-            var enemies = localStorage.getItem('enemyships').split(',');
-            var resourceNames = localStorage.getItem('resourceNames').split(',');
-            var resourceMarkers = localStorage.getItem('resourceMarkers').split(',');
+
+            var ships = localStorage.getItem('planetships')
+            if (ships.indexOf(',') >= 0) {
+                ships = ships.split(',');
+            };
+
+            var enemies = localStorage.getItem('enemyships');
+
+            if (enemies.indexOf(',') >= 0) {
+                enemies = enemies.split(',');
+            };
+
+            var resourceNames = localStorage.getItem('resourceNames');
+
+            if (resourceNames.indexOf(',') >= 0) {
+                resourceNames = resourceNames.split(',');
+            };
+
+            var resourceMarkers = localStorage.getItem('resourceMarkers');
+
+            if (resourceMarkers.indexOf(',') >= 0) {
+                resourceMarkers = resourceMarkers.split(',');
+            };
 
             // Move fleets to saved markers in the following order:
             // Earth,Mars,Mercury,Titan,Europa,Triton,Miranda,Pluto,Beatrix
@@ -747,6 +746,8 @@ var playState = {
             orbiter.x = orbiter.moveData.startX + orbiter.moveData.altitude * Math.cos(oRad);
             orbiter.y = orbiter.moveData.startY + orbiter.moveData.altitude * Math.sin(oRad);
         };
+
+        this.saveData();
     },
     
     phaseChanger: function() {
@@ -762,6 +763,8 @@ var playState = {
         } else {
             game.global.phase = 0;
         }
+
+        this.saveData();
     },
 
     resourceSpawner: function() {
@@ -846,7 +849,7 @@ var playState = {
                 selectedShip = selectedShipGroup[selectMarker];
             }
 
-        }
+        };
 
         if (game.global.phase === 3){
             var regionSelect = Math.floor(Math.random() * 3);
@@ -895,6 +898,8 @@ var playState = {
                 selectedShip = selectedShipGroup[selectMarker];
             }
         };
+
+        this.saveData();
     },
 
     enemySpawner: function() {
@@ -980,7 +985,7 @@ var playState = {
                     selectedShip = selectedShipGroup[selectMarker];
                 }
 
-            }
+            };
 
             if (game.global.phase === 3){
                 var regionSelect = Math.floor(Math.random() * 3);
@@ -1031,6 +1036,7 @@ var playState = {
                     selectedShip = selectedShipGroup[selectMarker];
                 }
             }
+            this.saveData();
         };
     },
     
@@ -1107,5 +1113,69 @@ var playState = {
         var minutes = "0" + Math.floor(s / 60);
         var seconds = "0" + (s - minutes * 60);
         return minutes.substr(-2) + ":" + seconds.substr(-2);
-    }
+    },
+
+    saveData: function() {
+         localStorage.setItem('phase', game.global.phase.toString());
+         localStorage.setItem('saved', 'true');
+
+         var planetships = [];
+         var enemyships = [];
+         var resourceNames = [];
+         var resourceMarkers = [];
+         game.global.orbiterGroup.forEach(function(orbiter) {
+         // Save position data of all orbiters
+             if (orbiter.shipName === 'Earth') {
+                 planetships.earth = orbiter.moveData.atMarker;
+             }
+             if (orbiter.shipName === 'Mars') {
+                 planetships.mars = orbiter.moveData.atMarker;
+             }
+
+             if (orbiter.shipName === 'Mercury') {
+                 planetships.mercury = orbiter.moveData.atMarker;
+             }
+
+             if (orbiter.shipName === 'Titan') {
+                 planetships.titan = orbiter.moveData.atMarker;
+             }
+
+             if (orbiter.shipName === 'Europa') {
+                 planetships.europa = orbiter.moveData.atMarker;
+             }
+
+             if (orbiter.shipName === 'Triton') {
+                 planetships.triton = orbiter.moveData.atMarker;
+             }
+
+             if (orbiter.shipName === 'Miranda') {
+                 planetships.miranda = orbiter.moveData.atMarker;
+             }
+
+             if (orbiter.shipName === 'Pluto') {
+                 planetships.pluto = orbiter.moveData.atMarker;
+             }
+             if (orbiter.shipName === 'Beatrix') {
+                 planetships.beatrix = orbiter.moveData.atMarker;
+             }
+             if (orbiter.shipName.toString().indexOf("Hound") >= 0) {
+                 enemyships.push(orbiter.moveData.atMarker)
+             }
+             if (orbiter.textureName.indexOf("heliumthree") >= 0 ||
+                orbiter.textureName.indexOf("antihydrogen") >= 0) {
+
+                resourceNames.push(orbiter.textureName);
+                resourceMarkers.push(orbiter.moveData.atMarker);
+             }
+
+         });
+
+         localStorage.setItem('planetships', [planetships.earth,planetships.mars,planetships.mercury,
+         planetships.titan,planetships.europa,planetships.triton,planetships.miranda,planetships.pluto,
+         planetships.beatrix]);
+
+         localStorage.setItem('enemyships', enemyships);
+         localStorage.setItem('resourceNames', resourceNames);
+         localStorage.setItem('resourceMarkers', resourceMarkers);
+     }
 };

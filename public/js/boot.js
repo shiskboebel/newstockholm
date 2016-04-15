@@ -51,6 +51,10 @@ var bootState = {
         game.load.image('europaflag', 'assets/europaflag.png');
         game.load.image('plutoflag', 'assets/plutoflag.png');
         game.load.image('beatrixflag', 'assets/beatrixflag.png');
+        game.load.image('mirandaflag', 'assets/mirandaflag.png');
+        game.load.image('tritonflag', 'assets/tritonflag.png');
+        game.load.image('mercuryflag', 'assets/mercuryflag.png');
+        game.load.image('enemyshipflag', 'assets/enemyshipflag.png');
 
         game.load.image('marker', 'assets/marker.png');
         game.load.spritesheet('explosion', 'assets/explosion.png', 64, 64, 23);
