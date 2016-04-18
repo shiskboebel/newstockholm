@@ -65,10 +65,26 @@ var playState = {
         gamerTitle.autoUpperCase = false;
         gamerTitle.text = 'Congratulations!';
         var gamerTitleImage = game.add.image(game.world.centerX, game.world.centerY, gamerTitle);
-        gamerTitleImage.scale.x = 5;
-        gamerTitleImage.scale.y = 5;
+        gamerTitleImage.scale.x = 10;
+        gamerTitleImage.scale.y = 10;
+        gamerTitleImage.anchor.setTo(0.5,0.5);
         gamerTitleImage.tint = 0x2b0aff;
         gamerTitleImage.visible = false;
+
+
+        var gamerSubTitle = game.add.retroFont('Xfont', 8, 8, Phaser.RetroFont.TEXT_SET1);
+        gamerSubTitle.align = Phaser.RetroFont.ALIGN_CENTER;
+
+        gamerSubTitle.multiLine = true;
+        gamerSubTitle.autoUpperCase = false;
+        gamerSubTitle.text = 'Humanity Wins!';
+        var gamerSubTitleImage = game.add.image(game.world.centerX, game.world.centerY + 90  , gamerSubTitle);
+        gamerSubTitleImage.scale.x = 10;
+        gamerSubTitleImage.scale.y = 10;
+        gamerSubTitleImage.anchor.setTo(0.5,0.5);
+        gamerSubTitleImage.tint = 0x2b0aff;
+        gamerSubTitleImage.visible = false;
+
 
         // Keys
         var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
@@ -84,7 +100,8 @@ var playState = {
         var fKey = game.input.keyboard.addKey(Phaser.KeyCode.F);
         var aKey = game.input.keyboard.addKey(Phaser.KeyCode.A);
         var jKey = game.input.keyboard.addKey(Phaser.KeyCode.J);
-        var questionKey = game.input.keyboard.addKey(Phaser.KeyCode.QUESTION_MARK);
+        var oKey = game.input.keyboard.addKey(Phaser.KeyCode.O);
+        var iKey = game.input.keyboard.addKey(Phaser.KeyCode.I);
 
         var numOneKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_1);
         var numTwoKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_2);
@@ -97,7 +114,9 @@ var playState = {
         numFourKey.onDown.add(function() {game.global.dreadnaughtFunds += 10000}, this);
         numFiveKey.onDown.add(function() {game.global.dreadnaughtFunds -= 10000}, this);
 
-        questionKey.onDown.add(function() {
+        iKey.onDown.add(this.fireWorks, this);
+
+        oKey.onDown.add(function() {
 
             game.global.orbiterGroup.forEach(function(orbiter) {
                 if (orbiter.shipName.toString().indexOf("Hound") >= 0) {
@@ -105,8 +124,8 @@ var playState = {
                     // Kill animation:
                     // https://github.com/robomatix/Phaser-example-animation-change-before-killing-it/blob/master/index.html
                     var explosion = this.game.add.sprite(
-                        this.x - this.moveData.altitude,
-                        this.y - this.moveData.altitude,
+                        orbiter.x - orbiter.moveData.altitude,
+                        orbiter.y - orbiter.moveData.altitude,
                         "explosion");
                     explosion.animations.add('explode');
                     explosion.animations.play('explode', 20, false, true);
@@ -119,11 +138,16 @@ var playState = {
                 game.world.centerY,
                 "explosion");
 
+            explosion.anchor.setTo(0.5,0.5);
             explosion.scale.x = 10;
             explosion.scale.y = 10;
             explosion.animations.add('explode');
             explosion.animations.play('explode', 20, false, true);
-            this.toggleDisplay(gamerTitleImage);
+
+            if (!gamerTitleImage.visible && !gamerSubTitleImage.visible) {
+                this.toggleDisplay(gamerTitleImage);
+                this.toggleDisplay(gamerSubTitleImage);
+            }
 
         }, this);
 
@@ -205,6 +229,7 @@ var playState = {
         game.world.bringToTop(game.global.orbiterGroup);
         game.world.bringToTop(game.global.selectedFlag);
         game.world.bringToTop(gamerTitleImage);
+        game.world.bringToTop(gamerSubTitleImage);
 
         // Earth
         game.global.spawnNewOrbiter(
@@ -1181,5 +1206,25 @@ var playState = {
          localStorage.setItem('enemyships', enemyships);
          localStorage.setItem('resourceNames', resourceNames);
          localStorage.setItem('resourceMarkers', resourceMarkers);
-     }
+     },
+
+    fireWorks: function() {
+        var posx = Math.floor((Math.random() * 1250) + 250);
+        var posy = Math.floor((Math.random() * 500) + 250);
+        var scale = Math.floor((Math.random() * 6) + 1);
+
+
+        var explosion = this.game.add.sprite(
+            posx,
+            posy,
+        "explosion");
+
+        explosion.anchor.setTo(0.5,0.5);
+        explosion.scale.x = scale;
+        explosion.scale.y = scale;
+        explosion.animations.add('explode');
+        explosion.animations.play('explode', 20, false, true);
+        game.world.bringToTop(explosion);
+
+    }
 };

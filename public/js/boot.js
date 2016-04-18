@@ -56,6 +56,8 @@ var bootState = {
         game.load.image('mercuryflag', 'assets/mercuryflag.png');
         game.load.image('enemyshipflag', 'assets/enemyshipflag.png');
 
+        game.load.image('greenball', 'assets/green.png')
+
         game.load.image('marker', 'assets/marker.png');
         game.load.spritesheet('explosion', 'assets/explosion.png', 64, 64, 23);
         
